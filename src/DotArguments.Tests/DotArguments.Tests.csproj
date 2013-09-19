@@ -53,6 +53,9 @@
     <Compile Include="TestContainers\CorruptArgumentContainer5.cs" />
     <Compile Include="TestContainers\ArgumentContainer3.cs" />
     <Compile Include="TestContainers\CorruptArgumentContainer7.cs" />
+    <Compile Include="TestContainers\CorruptArgumentContainer8.cs" />
+    <Compile Include="TestContainers\ArgumentContainer4.cs" />
+    <Compile Include="TestContainers\CorruptArgumentContainer9.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TestContainers\" />

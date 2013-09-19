@@ -61,6 +61,23 @@ namespace DotArguments.Tests
         }
 
         /// <summary>
+        /// Test non corrupt containers.
+        /// </summary>
+        [Test]
+        public void TestNonCorruptContainer4()
+        {
+            var def = new ContainerDefinition(typeof(ArgumentContainer4));
+
+            Assert.AreEqual(0, def.PositionalArguments.Count);
+            Assert.AreEqual(1, def.LongNamedArguments.Count);
+            Assert.AreEqual(1, def.ShortNamedArguments.Count);
+            Assert.IsNull(def.RemainingArguments);
+
+            Assert.AreEqual("Verbose", def.LongNamedArguments["verbose"].Property.Name);
+            Assert.AreEqual("Verbose", def.ShortNamedArguments["v"].Property.Name);
+        }
+
+        /// <summary>
         /// Test that properties with mutltiple <see cref="ArgumentAttribute"/>s are
         /// detected properly.
         /// </summary>
@@ -131,7 +148,7 @@ namespace DotArguments.Tests
         }
 
         /// <summary>
-        /// Test that multiple <see cref="PositionalValueArgumentAttribute"/> annotations
+        /// Test that multiple <see cref="RemainingArgumentAttribute"/> annotations
         /// are detected properly. 
         /// </summary>
         [Test]
@@ -143,6 +160,38 @@ namespace DotArguments.Tests
                 () =>
             {
                 new ContainerDefinition(typeof(CorruptArgumentContainer7));
+            });
+        }
+
+        /// <summary>
+        /// Test that <see cref="RemainingArgumentAttribute"/> annotations on non
+        /// <see cref="string[]"/> properties are detected properly. 
+        /// </summary>
+        [Test]
+        public void TestDetectionOfRemainingArgumentsOnNonStringArrays()
+        {
+            AssertExceptionWithMessage(
+                typeof(ContainerDefinitionException),
+                Is.StringContaining("must have type System.String[]"),
+                () =>
+            {
+                new ContainerDefinition(typeof(CorruptArgumentContainer8));
+            });
+        }
+
+        /// <summary>
+        /// Test that <see cref="NamedSwitchArgumentAttribute"/> annotations on non
+        /// <see cref="bool"/> properties are detected properly. 
+        /// </summary>
+        [Test]
+        public void TestDetectionOfNamedSwitchArgumentsOnNonBooleans()
+        {
+            AssertExceptionWithMessage(
+                typeof(ContainerDefinitionException),
+                Is.StringContaining("must have type System.Boolean"),
+                () =>
+            {
+                new ContainerDefinition(typeof(CorruptArgumentContainer9));
             });
         }
 
