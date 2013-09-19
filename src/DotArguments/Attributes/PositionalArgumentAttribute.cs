@@ -14,7 +14,7 @@ namespace DotArguments.Attributes
         /// Initializes a new instance of the <see cref="PositionalArgumentAttribute"/> class.
         /// </summary>
         /// <param name="index">The index.</param>
-        protected PositionalArgumentAttribute(int index)
+        internal PositionalArgumentAttribute(int index)
             : base()
         {
             this.index = index;

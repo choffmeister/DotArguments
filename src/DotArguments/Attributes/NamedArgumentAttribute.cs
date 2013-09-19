@@ -16,7 +16,7 @@ namespace DotArguments.Attributes
         /// </summary>
         /// <param name="longName">The long name.</param>
         /// <param name="shortName">The short name.</param>
-        protected NamedArgumentAttribute(string longName, string shortName)
+        internal NamedArgumentAttribute(string longName, string shortName)
             : base()
         {
             this.longName = longName;
