@@ -30,6 +30,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -40,6 +41,9 @@
     <Compile Include="Attributes\PositionalValueArgumentAttribute.cs" />
     <Compile Include="Attributes\RemainingArgumentsAttribute.cs" />
     <Compile Include="Attributes\NamedArgumentAttribute.cs" />
+    <Compile Include="ArgumentParser.cs" />
+    <Compile Include="ContainerDefinition.cs" />
+    <Compile Include="ContainerDefinitionException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

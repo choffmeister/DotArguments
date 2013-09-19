@@ -41,4 +41,20 @@
       <Name>DotArguments</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ContainerDefinitionTest.cs" />
+    <Compile Include="TestContainers\ArgumentContainer1.cs" />
+    <Compile Include="TestContainers\ArgumentContainer2.cs" />
+    <Compile Include="TestContainers\CorruptArgumentContainer1.cs" />
+    <Compile Include="TestContainers\CorruptArgumentContainer2.cs" />
+    <Compile Include="TestContainers\CorruptArgumentContainer3.cs" />
+    <Compile Include="TestContainers\CorruptArgumentContainer4.cs" />
+    <Compile Include="TestContainers\CorruptArgumentContainer6.cs" />
+    <Compile Include="TestContainers\CorruptArgumentContainer5.cs" />
+    <Compile Include="TestContainers\ArgumentContainer3.cs" />
+    <Compile Include="TestContainers\CorruptArgumentContainer7.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TestContainers\" />
+  </ItemGroup>
 </Project>
