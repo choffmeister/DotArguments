@@ -11,7 +11,6 @@ namespace DotArguments
     /// </summary>
     public class ContainerDefinition
     {
-        public static readonly Type[] SupportedValueArgumentTypes = new[] { typeof(string), typeof(int) };
         private readonly Type containerType;
         private readonly Dictionary<int, ArgumentProperty<PositionalArgumentAttribute>> positionalArguments;
         private readonly Dictionary<string, ArgumentProperty<NamedArgumentAttribute>> longNamedArguments;
@@ -87,7 +86,6 @@ namespace DotArguments
                         PositionalValueArgumentAttribute castedAttribute = attribute as PositionalValueArgumentAttribute;
 
                         this.EnsureIndexIsFree(castedAttribute.Index);
-                        this.EnsurePropertyType(pi);
                         this.positionalArguments.Add(castedAttribute.Index, new ArgumentProperty<PositionalArgumentAttribute>(castedAttribute, pi));
                     }
                     else if (attributeType == typeof(NamedValueArgumentAttribute))
@@ -96,7 +94,6 @@ namespace DotArguments
 
                         this.EnsureLongNameIsFree(castedAttribute.LongName);
                         this.EnsureShortNameIsFree(castedAttribute.ShortName);
-                        this.EnsurePropertyType(pi);
                         this.longNamedArguments.Add(castedAttribute.LongName, new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi));
                         this.shortNamedArguments.Add(castedAttribute.ShortName, new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi));
                     }
@@ -132,21 +129,11 @@ namespace DotArguments
             this.EnsureIndexCompleteness();
         }
 
-        private void EnsurePropertyType(PropertyInfo pi, Type neededType = null)
+        private void EnsurePropertyType(PropertyInfo pi, Type neededType)
         {
-            if (neededType != null)
+            if (pi.PropertyType != neededType)
             {
-                if (pi.PropertyType != neededType)
-                {
-                    throw new ContainerDefinitionException(string.Format("The property {0}::{1} must have type {2}", this.containerType.FullName, pi.Name, neededType.FullName));
-                }
-            }
-            else
-            {
-                if (!SupportedValueArgumentTypes.Contains(pi.PropertyType))
-                {
-                    throw new ContainerDefinitionException(string.Format("The property {0}::{1} has an unsupported type", this.containerType.FullName, pi.Name));
-                }
+                throw new ContainerDefinitionException(string.Format("The property {0}::{1} must have type {2}", this.containerType.FullName, pi.Name, neededType.FullName));
             }
         }
 
