@@ -12,7 +12,7 @@ namespace DotArguments.Tests.TestContainers
         /// <see cref="DotArguments.Tests.TestContainers.ArgumentContainer4"/> is verbose.
         /// </summary>
         /// <value><c>true</c> if verbose; otherwise, <c>false</c>.</value>
-        [NamedSwitchArgument("verbose", "v")]
+        [NamedSwitchArgument("verbose", 'v')]
         public bool Verbose { get; set; }
     }
 }

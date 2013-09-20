@@ -11,7 +11,7 @@ namespace DotArguments.Tests.TestContainers
         /// Gets or sets the remaining arguments.
         /// </summary>
         /// <value>The remaining.</value>
-        [NamedSwitchArgument("verbose", "v")]
+        [NamedSwitchArgument("verbose", 'v')]
         public string Verbose { get; set; }
     }
 }

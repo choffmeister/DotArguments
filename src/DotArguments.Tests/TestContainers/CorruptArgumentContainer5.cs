@@ -11,14 +11,14 @@ namespace DotArguments.Tests.TestContainers
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
-        [NamedValueArgument("name", "n")]
+        [NamedValueArgument("name", 'n')]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the age.
         /// </summary>
         /// <value>The name.</value>
-        [NamedValueArgument("name", "n2")]
+        [NamedValueArgument("name", 'm')]
         public string Age { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace DotArguments
         private readonly Type containerType;
         private readonly Dictionary<int, ArgumentProperty<PositionalArgumentAttribute>> positionalArguments;
         private readonly Dictionary<string, ArgumentProperty<NamedArgumentAttribute>> longNamedArguments;
-        private readonly Dictionary<string, ArgumentProperty<NamedArgumentAttribute>> shortNamedArguments;
+        private readonly Dictionary<char, ArgumentProperty<NamedArgumentAttribute>> shortNamedArguments;
         private ArgumentProperty<RemainingArgumentsAttribute> remainingArguments;
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace DotArguments
             this.containerType = containerType;
             this.positionalArguments = new Dictionary<int, ArgumentProperty<PositionalArgumentAttribute>>();
             this.longNamedArguments = new Dictionary<string, ArgumentProperty<NamedArgumentAttribute>>();
-            this.shortNamedArguments = new Dictionary<string, ArgumentProperty<NamedArgumentAttribute>>();
+            this.shortNamedArguments = new Dictionary<char, ArgumentProperty<NamedArgumentAttribute>>();
             this.remainingArguments = null;
 
             this.ReflectContainer();
@@ -55,7 +55,7 @@ namespace DotArguments
         /// Gets the short named arguments.
         /// </summary>
         /// <value>The short named arguments.</value>
-        public Dictionary<string, ArgumentProperty<NamedArgumentAttribute>> ShortNamedArguments
+        public Dictionary<char, ArgumentProperty<NamedArgumentAttribute>> ShortNamedArguments
         {
             get { return this.shortNamedArguments; }
         }
@@ -161,7 +161,7 @@ namespace DotArguments
             }
         }
 
-        private void EnsureShortNameIsFree(string shortName)
+        private void EnsureShortNameIsFree(char shortName)
         {
             if (this.shortNamedArguments.ContainsKey(shortName))
             {

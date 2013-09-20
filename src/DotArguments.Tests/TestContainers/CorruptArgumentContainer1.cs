@@ -12,7 +12,7 @@ namespace DotArguments.Tests.TestContainers
         /// </summary>
         /// <value>The name.</value>
         [PositionalValueArgumentAttribute(0)]
-        [NamedValueArgumentAttribute("age", "a")]
+        [NamedValueArgumentAttribute("age", 'a')]
         public string Name { get; set; }
     }
 }

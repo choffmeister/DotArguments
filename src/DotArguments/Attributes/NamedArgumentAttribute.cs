@@ -9,14 +9,14 @@ namespace DotArguments.Attributes
     public abstract class NamedArgumentAttribute : ArgumentAttribute
     {
         private readonly string longName;
-        private readonly string shortName;
+        private readonly char shortName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NamedArgumentAttribute"/> class.
         /// </summary>
         /// <param name="longName">The long name.</param>
         /// <param name="shortName">The short name.</param>
-        internal NamedArgumentAttribute(string longName, string shortName)
+        internal NamedArgumentAttribute(string longName, char shortName)
             : base()
         {
             this.longName = longName;
@@ -36,7 +36,7 @@ namespace DotArguments.Attributes
         /// Gets the short name.
         /// </summary>
         /// <value>The short name.</value>
-        public string ShortName
+        public char ShortName
         {
             get { return this.shortName; }
         }

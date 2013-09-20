@@ -13,7 +13,7 @@ namespace DotArguments.Attributes
         /// </summary>
         /// <param name="longName">The long name.</param>
         /// <param name="shortName">The short name.</param>
-        public NamedValueArgumentAttribute(string longName, string shortName)
+        public NamedValueArgumentAttribute(string longName, char shortName)
             : base(longName, shortName)
         {
         }

@@ -18,7 +18,7 @@ namespace DotArguments.Tests.TestContainers
         /// Gets or sets the age.
         /// </summary>
         /// <value>The age.</value>
-        [NamedValueArgumentAttribute("age", "a")]
+        [NamedValueArgumentAttribute("age", 'a')]
         public int Age { get; set; }
     }
 }

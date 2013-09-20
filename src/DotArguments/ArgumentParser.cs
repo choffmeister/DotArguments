@@ -59,15 +59,22 @@ namespace DotArguments
                     }
                     else if (currentArgument.StartsWith("-", StringComparison.InvariantCulture))
                     {
-                        // a new short named argument
-                        string shortName = currentArgument.Substring(1);
-                        currentNamedArgument = definition.ShortNamedArguments[shortName];
-
-                        if (currentNamedArgument.Attribute.GetType() == typeof(NamedSwitchArgumentAttribute))
+                        if (currentArgument.Length == 2)
                         {
-                            // a named switch
-                            currentNamedArgument.Property.SetValue(container, true, new object[0]);
-                            currentNamedArgument = null;
+                            // a new short named argument
+                            char shortName = currentArgument[1];
+                            currentNamedArgument = definition.ShortNamedArguments[shortName];
+
+                            if (currentNamedArgument.Attribute.GetType() == typeof(NamedSwitchArgumentAttribute))
+                            {
+                                // a named switch
+                                currentNamedArgument.Property.SetValue(container, true, new object[0]);
+                                currentNamedArgument = null;
+                            }
+                        }
+                        else
+                        {
+                            throw new NotImplementedException();
                         }
                     }
                     else

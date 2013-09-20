@@ -40,7 +40,7 @@ namespace DotArguments.Tests
 
             Assert.AreEqual("Name", def.PositionalArguments[0].Property.Name);
             Assert.AreEqual("Age", def.LongNamedArguments["age"].Property.Name);
-            Assert.AreEqual("Age", def.ShortNamedArguments["a"].Property.Name);
+            Assert.AreEqual("Age", def.ShortNamedArguments['a'].Property.Name);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace DotArguments.Tests
             Assert.IsNull(def.RemainingArguments);
 
             Assert.AreEqual("Verbose", def.LongNamedArguments["verbose"].Property.Name);
-            Assert.AreEqual("Verbose", def.ShortNamedArguments["v"].Property.Name);
+            Assert.AreEqual("Verbose", def.ShortNamedArguments['v'].Property.Name);
         }
 
         /// <summary>
