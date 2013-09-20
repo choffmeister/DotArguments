@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using DotArguments.Attributes;
 
 namespace DotArguments
@@ -11,6 +12,7 @@ namespace DotArguments
     /// </summary>
     public class ContainerDefinition
     {
+        private static readonly Regex LongNameRegex = new Regex(@"^[a-zA-Z]([\-|_]?[a-zA-Z0-9]+)*$", RegexOptions.Compiled);
         private readonly Type containerType;
         private readonly Dictionary<int, ArgumentProperty<PositionalArgumentAttribute>> positionalArguments;
         private readonly Dictionary<string, ArgumentProperty<NamedArgumentAttribute>> longNamedArguments;
@@ -95,6 +97,7 @@ namespace DotArguments
                         var argumentProperty = new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi);
 
                         this.EnsureLongNameIsFree(castedAttribute.LongName);
+                        this.EnsureLongNameFormat(castedAttribute.LongName);
                         this.longNamedArguments.Add(castedAttribute.LongName, argumentProperty);
 
                         if (castedAttribute.ShortName.HasValue)
@@ -109,6 +112,7 @@ namespace DotArguments
                         var argumentProperty = new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi);
 
                         this.EnsureLongNameIsFree(castedAttribute.LongName);
+                        this.EnsureLongNameFormat(castedAttribute.LongName);
                         this.EnsurePropertyType(pi, typeof(bool));
                         this.longNamedArguments.Add(castedAttribute.LongName, argumentProperty);
 
@@ -178,6 +182,19 @@ namespace DotArguments
             if (this.shortNamedArguments.ContainsKey(shortName))
             {
                 throw new ContainerDefinitionException(string.Format("Short name {0} is already in use", shortName));
+            }
+        }
+
+        private void EnsureLongNameFormat(string longName)
+        {
+            if (!LongNameRegex.Match(longName).Success)
+            {
+                throw new ContainerDefinitionException(string.Format("Long name {0} is invalid. Must match regex ^[a-zA-Z]([\\-|_]?[a-zA-Z0-9]+)*$", longName));
+            }
+
+            if (longName.Length < 2)
+            {
+                throw new ContainerDefinitionException(string.Format("Long name {0} is invalid. Must have at least 2 characters", longName));
             }
         }
 

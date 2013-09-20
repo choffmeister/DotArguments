@@ -213,6 +213,29 @@ namespace DotArguments.Tests
             });
         }
 
+        /// <summary>
+        /// Test that invalid long names are detected properly.
+        /// </summary>
+        [Test]
+        public void TestDetectionOfInvalidLongNames()
+        {
+            AssertExceptionWithMessage(
+                typeof(ContainerDefinitionException),
+                Is.StringContaining("at least 2 characters"),
+                () =>
+            {
+                new ContainerDefinition(typeof(CorruptArgumentContainer10));
+            });
+
+            AssertExceptionWithMessage(
+                typeof(ContainerDefinitionException),
+                Is.StringContaining("match regex"),
+                () =>
+            {
+                new ContainerDefinition(typeof(CorruptArgumentContainer11));
+            });
+        }
+
         private static void AssertExceptionWithMessage(Type exceptionType, IResolveConstraint messageConstraint, Action action)
         {
             try
