@@ -1,0 +1,5 @@
+machine: precise64-mono
+
+script: |
+  cd choffmeister/DotArguments && xbuild /verbosity:quiet src/DotArguments.sln
+  cd choffmeister/DotArguments && nunit-console src/DotArguments.Tests/bin/Debug/DotArguments.Tests.dll
