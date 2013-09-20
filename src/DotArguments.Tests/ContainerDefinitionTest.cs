@@ -78,6 +78,24 @@ namespace DotArguments.Tests
         }
 
         /// <summary>
+        /// Test non corrupt containers.
+        /// </summary>
+        [Test]
+        public void TestNonCorruptContainer5()
+        {
+            var def = new ContainerDefinition(typeof(ArgumentContainer5));
+
+            Assert.AreEqual(0, def.PositionalArguments.Count);
+            Assert.AreEqual(2, def.LongNamedArguments.Count);
+            Assert.AreEqual(1, def.ShortNamedArguments.Count);
+            Assert.IsNull(def.RemainingArguments);
+
+            Assert.AreEqual("Verbose", def.LongNamedArguments["verbose"].Property.Name);
+            Assert.AreEqual("Verbose", def.ShortNamedArguments['v'].Property.Name);
+            Assert.AreEqual("Name", def.LongNamedArguments["name"].Property.Name);
+        }
+
+        /// <summary>
         /// Test that properties with mutltiple <see cref="ArgumentAttribute"/>s are
         /// detected properly.
         /// </summary>

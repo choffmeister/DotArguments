@@ -93,19 +93,27 @@ namespace DotArguments
                         NamedValueArgumentAttribute castedAttribute = attribute as NamedValueArgumentAttribute;
 
                         this.EnsureLongNameIsFree(castedAttribute.LongName);
-                        this.EnsureShortNameIsFree(castedAttribute.ShortName);
                         this.longNamedArguments.Add(castedAttribute.LongName, new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi));
-                        this.shortNamedArguments.Add(castedAttribute.ShortName, new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi));
+
+                        if (castedAttribute.ShortName.HasValue)
+                        {
+                            this.EnsureShortNameIsFree(castedAttribute.ShortName.Value);
+                            this.shortNamedArguments.Add(castedAttribute.ShortName.Value, new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi));
+                        }
                     }
                     else if (attributeType == typeof(NamedSwitchArgumentAttribute))
                     {
                         NamedSwitchArgumentAttribute castedAttribute = attribute as NamedSwitchArgumentAttribute;
 
                         this.EnsureLongNameIsFree(castedAttribute.LongName);
-                        this.EnsureShortNameIsFree(castedAttribute.ShortName);
                         this.EnsurePropertyType(pi, typeof(bool));
                         this.longNamedArguments.Add(castedAttribute.LongName, new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi));
-                        this.shortNamedArguments.Add(castedAttribute.ShortName, new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi));
+
+                        if (castedAttribute.ShortName.HasValue)
+                        {
+                            this.EnsureShortNameIsFree(castedAttribute.ShortName.Value);
+                            this.shortNamedArguments.Add(castedAttribute.ShortName.Value, new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi));
+                        }
                     }
                     else if (attributeType == typeof(RemainingArgumentsAttribute))
                     {

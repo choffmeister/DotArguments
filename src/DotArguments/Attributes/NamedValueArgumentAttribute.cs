@@ -17,5 +17,14 @@ namespace DotArguments.Attributes
             : base(longName, shortName)
         {
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NamedValueArgumentAttribute"/> class.
+        /// </summary>
+        /// <param name="longName">The long name.</param>
+        public NamedValueArgumentAttribute(string longName)
+            : base(longName)
+        {
+        }
     }
 }
