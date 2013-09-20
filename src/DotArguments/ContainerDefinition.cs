@@ -83,45 +83,49 @@ namespace DotArguments
 
                     if (attributeType == typeof(PositionalValueArgumentAttribute))
                     {
-                        PositionalValueArgumentAttribute castedAttribute = attribute as PositionalValueArgumentAttribute;
+                        var castedAttribute = attribute as PositionalValueArgumentAttribute;
+                        var argumentProperty = new ArgumentProperty<PositionalArgumentAttribute>(castedAttribute, pi);
 
                         this.EnsureIndexIsFree(castedAttribute.Index);
-                        this.positionalArguments.Add(castedAttribute.Index, new ArgumentProperty<PositionalArgumentAttribute>(castedAttribute, pi));
+                        this.positionalArguments.Add(castedAttribute.Index, argumentProperty);
                     }
                     else if (attributeType == typeof(NamedValueArgumentAttribute))
                     {
-                        NamedValueArgumentAttribute castedAttribute = attribute as NamedValueArgumentAttribute;
+                        var castedAttribute = attribute as NamedValueArgumentAttribute;
+                        var argumentProperty = new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi);
 
                         this.EnsureLongNameIsFree(castedAttribute.LongName);
-                        this.longNamedArguments.Add(castedAttribute.LongName, new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi));
+                        this.longNamedArguments.Add(castedAttribute.LongName, argumentProperty);
 
                         if (castedAttribute.ShortName.HasValue)
                         {
                             this.EnsureShortNameIsFree(castedAttribute.ShortName.Value);
-                            this.shortNamedArguments.Add(castedAttribute.ShortName.Value, new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi));
+                            this.shortNamedArguments.Add(castedAttribute.ShortName.Value, argumentProperty);
                         }
                     }
                     else if (attributeType == typeof(NamedSwitchArgumentAttribute))
                     {
-                        NamedSwitchArgumentAttribute castedAttribute = attribute as NamedSwitchArgumentAttribute;
+                        var castedAttribute = attribute as NamedSwitchArgumentAttribute;
+                        var argumentProperty = new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi);
 
                         this.EnsureLongNameIsFree(castedAttribute.LongName);
                         this.EnsurePropertyType(pi, typeof(bool));
-                        this.longNamedArguments.Add(castedAttribute.LongName, new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi));
+                        this.longNamedArguments.Add(castedAttribute.LongName, argumentProperty);
 
                         if (castedAttribute.ShortName.HasValue)
                         {
                             this.EnsureShortNameIsFree(castedAttribute.ShortName.Value);
-                            this.shortNamedArguments.Add(castedAttribute.ShortName.Value, new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi));
+                            this.shortNamedArguments.Add(castedAttribute.ShortName.Value, argumentProperty);
                         }
                     }
                     else if (attributeType == typeof(RemainingArgumentsAttribute))
                     {
-                        RemainingArgumentsAttribute castedAttribute = attribute as RemainingArgumentsAttribute;
+                        var castedAttribute = attribute as RemainingArgumentsAttribute;
+                        var argumentProperty = new ArgumentProperty<RemainingArgumentsAttribute>(castedAttribute, pi);
 
                         this.EnsureRemainingArgumentsIsFree();
                         this.EnsurePropertyType(pi, typeof(string[]));
-                        this.remainingArguments = new ArgumentProperty<RemainingArgumentsAttribute>(castedAttribute, pi);
+                        this.remainingArguments = argumentProperty;
                     }
                     else
                     {

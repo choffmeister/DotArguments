@@ -26,5 +26,11 @@ namespace DotArguments.Attributes
             : base(longName)
         {
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is optional.
+        /// </summary>
+        /// <value><c>true</c> if this instance is optional; otherwise, <c>false</c>.</value>
+        public bool IsOptional { get; set; }
     }
 }

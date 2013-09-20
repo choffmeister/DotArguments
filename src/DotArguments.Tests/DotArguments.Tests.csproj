@@ -58,6 +58,7 @@
     <Compile Include="TestContainers\CorruptArgumentContainer9.cs" />
     <Compile Include="ArgumentParserTest.cs" />
     <Compile Include="TestContainers\ArgumentContainer5.cs" />
+    <Compile Include="TestContainers\ArgumentContainer6.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TestContainers\" />

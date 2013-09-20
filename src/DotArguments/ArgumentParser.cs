@@ -27,13 +27,30 @@ namespace DotArguments
             ContainerDefinition definition = new ContainerDefinition(typeof(T));
             T container = new T();
 
-            ConsumeArguments(definition, container, arguments);
+            // ensure that any exception is wrapped into an ArgumentParserException
+            try
+            {
+                ConsumeArguments(definition, container, arguments);
+            }
+            catch (ArgumentParserException ex)
+            {
+                // do not wrap
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                // wrap
+                throw new ArgumentParserException("Error while parsing", ex);
+            }
 
             return container;
         }
 
         private static void ConsumeArguments(ContainerDefinition definition, T container, string[] arguments)
         {
+            var foundNamedArguments = new List<ContainerDefinition.ArgumentProperty<NamedArgumentAttribute>>();
+            var foundPositionArguments = new List<ContainerDefinition.ArgumentProperty<PositionalArgumentAttribute>>();
+
             int currentPositionalIndex = 0;
             ContainerDefinition.ArgumentProperty<NamedArgumentAttribute> currentNamedArgument = null;
             List<string> remainingArguments = new List<string>();
@@ -54,6 +71,8 @@ namespace DotArguments
                         {
                             // a named switch
                             currentNamedArgument.Property.SetValue(container, true, new object[0]);
+
+                            foundNamedArguments.Add(currentNamedArgument);
                             currentNamedArgument = null;
                         }
                     }
@@ -69,12 +88,14 @@ namespace DotArguments
                             {
                                 // a named switch
                                 currentNamedArgument.Property.SetValue(container, true, new object[0]);
+
+                                foundNamedArguments.Add(currentNamedArgument);
                                 currentNamedArgument = null;
                             }
                         }
                         else
                         {
-                            throw new NotImplementedException();
+                            throw new ArgumentParserException("Short named arguments must contain out of one character");
                         }
                     }
                     else
@@ -85,6 +106,7 @@ namespace DotArguments
                             ContainerDefinition.ArgumentProperty<PositionalArgumentAttribute> currentPositionalArgument = definition.PositionalArguments[currentPositionalIndex];
                             currentPositionalArgument.Property.SetValue(container, ConvertValue(currentPositionalArgument.Property.PropertyType, currentArgument), new object[0]);
 
+                            foundPositionArguments.Add(currentPositionalArgument);
                             currentPositionalIndex++;
                         }
                         else
@@ -98,6 +120,7 @@ namespace DotArguments
                 {
                     currentNamedArgument.Property.SetValue(container, ConvertValue(currentNamedArgument.Property.PropertyType, currentArgument), new object[0]);
 
+                    foundNamedArguments.Add(currentNamedArgument);
                     currentNamedArgument = null;
                 }
             }
@@ -108,10 +131,41 @@ namespace DotArguments
             }
             else if (remainingArguments.Count > 0)
             {
-                throw new NotImplementedException();
+                throw new ArgumentParserException("Too many positional arguments");
             }
 
-            // TODO: check if all required arguments were passed in
+            // check if all non optional arguments were present
+            foreach (var namedArgument in definition.LongNamedArguments.Values)
+            {
+                if (!foundNamedArguments.Contains(namedArgument))
+                {
+                    if (namedArgument.Attribute is NamedValueArgumentAttribute)
+                    {
+                        NamedValueArgumentAttribute castedAttribute = namedArgument.Attribute as NamedValueArgumentAttribute;
+
+                        if (!castedAttribute.IsOptional)
+                        {
+                            throw new ArgumentParserException(string.Format("Mandatory argument {0} is missing", namedArgument.Attribute.LongName));
+                        }
+                    }
+                }
+            }
+
+            foreach (var positionalArgument in definition.PositionalArguments.Values)
+            {
+                if (!foundPositionArguments.Contains(positionalArgument))
+                {
+                    if (positionalArgument.Attribute is PositionalValueArgumentAttribute)
+                    {
+                        PositionalValueArgumentAttribute castedAttribute = positionalArgument.Attribute as PositionalValueArgumentAttribute;
+
+                        if (!castedAttribute.IsOptional)
+                        {
+                            throw new ArgumentParserException(string.Format("Mandatory argument at position {0} is missing", positionalArgument.Attribute.Index));
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>

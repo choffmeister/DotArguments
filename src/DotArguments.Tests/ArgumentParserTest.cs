@@ -1,5 +1,7 @@
+using System;
 using DotArguments.Tests.TestContainers;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
 namespace DotArguments.Tests
 {
@@ -71,6 +73,98 @@ namespace DotArguments.Tests
 
             ArgumentContainer4 c3 = ArgumentParser<ArgumentContainer4>.Parse(new string[] { "-v" });
             Assert.AreEqual(true, c3.Verbose);
+        }
+
+        /// <summary>
+        /// Test case 5.
+        /// </summary>
+        [Test]
+        public void TestCase5()
+        {
+            ArgumentContainer6 c1 = ArgumentParser<ArgumentContainer6>.Parse(new string[] { "--name1", "n1", "1" });
+            Assert.AreEqual("n1", c1.Name1);
+            Assert.IsNull(c1.Name2);
+            Assert.AreEqual(1, c1.Age1);
+            Assert.IsNull(c1.Age2);
+        }
+
+        /// <summary>
+        /// Test case 6.
+        /// </summary>
+        [Test]
+        public void TestCase6()
+        {
+            AssertExceptionWithMessage(
+                typeof(ArgumentParserException),
+                Is.StringContaining("name1").And.StringContaining("missing"),
+                () =>
+            {
+                ArgumentParser<ArgumentContainer6>.Parse(new string[] { "1" });
+            });
+        }
+
+        /// <summary>
+        /// Test case 7.
+        /// </summary>
+        [Test]
+        public void TestCase7()
+        {
+            AssertExceptionWithMessage(
+                typeof(ArgumentParserException),
+                Is.StringContaining("0").And.StringContaining("missing"),
+                () =>
+            {
+                ArgumentParser<ArgumentContainer6>.Parse(new string[] { "--name1", "n1" });
+            });
+        }
+
+        /// <summary>
+        /// Test case 8.
+        /// </summary>
+        [Test]
+        public void TestCase8()
+        {
+            AssertExceptionWithMessage(
+                typeof(ArgumentParserException),
+                Is.StringContaining("Too many"),
+                () =>
+            {
+                ArgumentParser<ArgumentContainer2>.Parse(new string[] { "--age", "10", "pos1", "pos2" });
+            });
+        }
+
+        /// <summary>
+        /// Test case 9.
+        /// </summary>
+        [Test]
+        public void TestCase9()
+        {
+            AssertExceptionWithMessage(
+                typeof(ArgumentParserException),
+                Is.StringContaining("out of one character"),
+            () =>
+            {
+                ArgumentParser<ArgumentContainer2>.Parse(new string[] { "-ab", "10", "pos1" });
+            });
+        }
+
+        private static void AssertExceptionWithMessage(Type exceptionType, IResolveConstraint messageConstraint, Action action)
+        {
+            try
+            {
+                action();
+
+                Assert.Fail(string.Format("Expected exception"));
+            }
+            catch (AssertionException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(exceptionType, ex.GetType());
+                Assert.That(ex.Message, messageConstraint);
+            }
         }
     }
 }
