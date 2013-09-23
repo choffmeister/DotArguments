@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using DotArguments;
 using DotArguments.Attributes;
 
@@ -104,7 +105,7 @@ namespace DotArguments
                         {
                             // a positional argument
                             ContainerDefinition.ArgumentProperty<PositionalArgumentAttribute> currentPositionalArgument = definition.PositionalArguments[currentPositionalIndex];
-                            currentPositionalArgument.Property.SetValue(container, ConvertValue(currentPositionalArgument.Property.PropertyType, currentArgument), new object[0]);
+                            SetValue(currentPositionalArgument.Property, container, currentArgument);
 
                             foundPositionArguments.Add(currentPositionalArgument);
                             currentPositionalIndex++;
@@ -118,7 +119,7 @@ namespace DotArguments
                 }
                 else
                 {
-                    currentNamedArgument.Property.SetValue(container, ConvertValue(currentNamedArgument.Property.PropertyType, currentArgument), new object[0]);
+                    SetValue(currentNamedArgument.Property, container, currentArgument);
 
                     foundNamedArguments.Add(currentNamedArgument);
                     currentNamedArgument = null;
@@ -169,14 +170,31 @@ namespace DotArguments
         }
 
         /// <summary>
-        /// Converts a value into the desired target type with invarian culture formatter.
+        /// Converts and sets a string value to a property.
         /// </summary>
-        /// <returns>The value.</returns>
-        /// <param name="targetType">Target type.</param>
-        /// <param name="source">The source value.</param>
-        private static object ConvertValue(Type targetType, string source)
+        /// <param name="propertyInfo">The property info.</param>
+        /// <param name="instance">The instance.</param>
+        /// <param name="stringValue">The string value.</param>
+        private static void SetValue(PropertyInfo propertyInfo, object instance, string stringValue)
         {
-            return Convert.ChangeType(source, targetType, CultureInfo.InvariantCulture);
+            Type type = propertyInfo.PropertyType;
+            type = Nullable.GetUnderlyingType(type) ?? type;
+
+            object value = stringValue != null ? 
+                Convert.ChangeType(stringValue, type, CultureInfo.InvariantCulture) :
+                GetDefaultValue(type);
+
+            propertyInfo.SetValue(instance, value, new object[0]);
+        }
+
+        /// <summary>
+        /// Gets the default value of a type.
+        /// </summary>
+        /// <returns>The default value.</returns>
+        /// <param name="type">The type.</param>
+        private static object GetDefaultValue(Type type)
+        {
+            return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
     }
 }

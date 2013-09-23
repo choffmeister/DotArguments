@@ -32,17 +32,17 @@ namespace DotArgumentsDemo
 {
     public class DemoArguments
     {
-        [PositionalValueArgumentAttribute(0)]
+        [PositionalValueArgument(0)]
         public string InputPath { get; set; }
 
-        [PositionalValueArgument(1)]
+        [PositionalValueArgument(1, IsOptional = true)]
         public string OutputPath { get; set; }
 
-        [NamedValueArgument("name", 'n')]
+        [NamedValueArgument("name", 'n', IsOptional = true)]
         public string Name { get; set; }
 
-        [NamedValueArgument("age", 'a')]
-        public int Age { get; set; }
+        [NamedValueArgument("age", 'a', IsOptional = true)]
+        public int? Age { get; set; }
 
         [NamedSwitchArgument("verbose", 'v')]
         public bool Verbose { get; set; }
@@ -52,14 +52,21 @@ namespace DotArgumentsDemo
     {
         public static void Main(string[] args)
         {
-            // create object with the populated arguments
-            DemoArguments arguments = ArgumentParser<DemoArguments>.Parse(args);
+            try
+            {
+                // create object with the populated arguments
+                DemoArguments arguments = ArgumentParser<DemoArguments>.Parse(args);
 
-            Console.WriteLine("InputPath: {0}", arguments.InputPath ?? "(null)");
-            Console.WriteLine("OutputPath: {0}", arguments.OutputPath ?? "(null)");
-            Console.WriteLine("Name: {0}", arguments.Name ?? "(null)");
-            Console.WriteLine("Age: {0}", arguments.Age ?? "(null)");
-            Console.WriteLine("Verbose: {0}", arguments.Verbose ?? "(null)");
+                Console.WriteLine("InputPath: {0}", arguments.InputPath ?? "(null)");
+                Console.WriteLine("OutputPath: {0}", arguments.OutputPath ?? "(null)");
+                Console.WriteLine("Name: {0}", arguments.Name ?? "(null)");
+                Console.WriteLine("Age: {0}", arguments.Age.HasValue ? arguments.Age.Value.ToString() : "(null)");
+                Console.WriteLine("Verbose: {0}", arguments.Verbose);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex);
+            }
         }
     }
 }
@@ -73,7 +80,7 @@ InputPath: input
 OutputPath: output
 Name: tom
 Age: 10
-Verbose: false
+Verbose: False
 ```
 
 ```bash
@@ -82,7 +89,7 @@ InputPath: input
 OutputPath: output
 Name: tom
 Age: 10
-Verbose: false
+Verbose: False
 ```
 
 ```bash
@@ -91,7 +98,7 @@ InputPath: input
 OutputPath: (null)
 Name: (null)
 Age: 10
-Verbose: true
+Verbose: True
 ```
 
 ```bash
@@ -99,6 +106,6 @@ $ DotArgumentsDemo.exe input -v output
 InputPath: input
 OutputPath: output
 Name: (null)
-Age: 0
-Verbose: true
+Age: (null)
+Verbose: True
 ```
