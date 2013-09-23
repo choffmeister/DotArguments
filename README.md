@@ -2,6 +2,14 @@
 
 DotArguments is a simple command-line arguments parser for .NET/Mono. The available arguments are defined by simple POCOs with special attributes on its properties.
 
+## Install via NuGet
+
+This package can be found on NuGet:
+
+```
+PM> Install-Package DotArguments 
+```
+
 ## Supported arguments
 
 There are four different types of arguments:
