@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<package>
+  <metadata>
+    <id>DotArguments</id>
+    <version>$version$</version>
+    <title>DotArguments</title>
+    <authors>Christian Hoffmeister</authors>
+    <owners>Christian Hoffmeister</owners>
+    <licenseUrl>https://github.com/choffmeister/DotArguments/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/choffmeister/DotArguments</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A command-line arguments parser for .NET/Mono</description>
+    <copyright>Copyright 2013</copyright>
+    <tags>CLI</tags>
+  </metadata>
+  <files>
+    <file src="bin/Release/DotArguments.dll" target="lib" />
+  </files>
+</package>
