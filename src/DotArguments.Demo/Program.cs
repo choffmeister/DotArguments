@@ -33,7 +33,7 @@ namespace DotArgumentsDemo
             catch (Exception ex)
             {
                 Console.Error.WriteLine(string.Format("error: {0}", ex.Message));
-                Console.Error.Write(string.Format("usage: {0}", definition.GenerateUsageString("DotArguments.Demo.exe")));
+                Console.Error.Write(string.Format("usage: {0}", definition.GenerateUsageString()));
 
                 Environment.Exit(1);
             }

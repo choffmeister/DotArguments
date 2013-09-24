@@ -28,9 +28,9 @@ namespace DotArguments
         /// </summary>
         /// <returns>The usage string.</returns>
         /// <param name="definition">The argument definition.</param>
-        /// <param name="executableName">The name of the executable.</param>
-        public static string GenerateUsageString(this ArgumentDefinition definition, string executableName)
+        public static string GenerateUsageString(this ArgumentDefinition definition)
         {
+            string executableName = System.AppDomain.CurrentDomain.FriendlyName;
             bool hasPositionalArguments = definition.PositionalArguments.Count > 0;
             bool hasNamedArguments = definition.LongNamedArguments.Count > 0;
 
