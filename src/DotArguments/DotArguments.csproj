@@ -42,11 +42,11 @@
     <Compile Include="Attributes\RemainingArgumentsAttribute.cs" />
     <Compile Include="Attributes\NamedArgumentAttribute.cs" />
     <Compile Include="ArgumentParser.cs" />
-    <Compile Include="ContainerDefinition.cs" />
-    <Compile Include="ContainerDefinitionException.cs" />
     <Compile Include="ArgumentParserException.cs" />
     <Compile Include="Attributes\ArgumentDescriptionAttribute.cs" />
-    <Compile Include="ContainerDefinitionExtensions.cs" />
+    <Compile Include="ArgumentDefinition.cs" />
+    <Compile Include="ArgumentDefinitionException.cs" />
+    <Compile Include="ArgumentDefinitionExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

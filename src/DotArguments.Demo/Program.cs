@@ -1,8 +1,5 @@
 using System;
-using System.Linq;
-using System.Text;
 using DotArguments;
-using DotArguments.Attributes;
 
 namespace DotArgumentsDemo
 {
@@ -18,12 +15,12 @@ namespace DotArgumentsDemo
         public static void Main(string[] args)
         {
             // create container definition
-            ContainerDefinition definition = new ContainerDefinition(typeof(DemoArguments));
+            ArgumentDefinition definition = new ArgumentDefinition(typeof(DemoArguments));
 
             try
             {
                 // create object with the populated arguments
-                DemoArguments arguments = ArgumentParser<DemoArguments>.Parse(definition, args);
+                DemoArguments arguments = definition.Parse<DemoArguments>(args);
 
                 Console.WriteLine("InputPath: {0}", arguments.InputPath ?? "(null)");
                 Console.WriteLine("OutputPath: {0}", arguments.OutputPath ?? "(null)");

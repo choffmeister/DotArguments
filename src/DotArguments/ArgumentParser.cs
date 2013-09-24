@@ -22,9 +22,9 @@ namespace DotArguments
         /// <param name="arguments">The arguments.</param>
         public static T Parse(string[] arguments)
         {
-            ContainerDefinition containerDefinition = new ContainerDefinition(typeof(T));
+            ArgumentDefinition definition = new ArgumentDefinition(typeof(T));
 
-            return Parse(containerDefinition, arguments);
+            return Parse(definition, arguments);
         }
 
         /// <summary>
@@ -32,23 +32,23 @@ namespace DotArguments
         /// object.
         /// </summary>
         /// <returns>The argument container.</returns>
-        /// <param name="containerDefinition">The container definition.</param>
+        /// <param name="definition">The argument definition.</param>
         /// <param name="arguments">The arguments.</param>
-        public static T Parse(ContainerDefinition containerDefinition, string[] arguments)
+        public static T Parse(ArgumentDefinition definition, string[] arguments)
         {
-            if (containerDefinition == null)
-                throw new ArgumentNullException("containerDefinition");
+            if (definition == null)
+                throw new ArgumentNullException("argumentDefinition");
             if (arguments == null)
                 throw new ArgumentNullException("arguments");
-            if (containerDefinition.ContainerType != typeof(T))
-                throw new ArgumentException("ContainerDefinition.ContainerType must match T", "containerDefinition");
+            if (definition.ContainerType != typeof(T))
+                throw new ArgumentException("argumentDefinition.ContainerType must match T", "argumentDefinition");
 
             // ensure that any exception is wrapped into an ArgumentParserException
             try
             {
                 T container = new T();
 
-                ConsumeArguments(containerDefinition, container, arguments);
+                ConsumeArguments(definition, container, arguments);
 
                 return container;
             }
@@ -64,13 +64,13 @@ namespace DotArguments
             }
         }
 
-        private static void ConsumeArguments(ContainerDefinition definition, T container, string[] arguments)
+        private static void ConsumeArguments(ArgumentDefinition definition, T container, string[] arguments)
         {
-            var foundNamedArguments = new List<ContainerDefinition.ArgumentProperty<NamedArgumentAttribute>>();
-            var foundPositionArguments = new List<ContainerDefinition.ArgumentProperty<PositionalArgumentAttribute>>();
+            var foundNamedArguments = new List<ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute>>();
+            var foundPositionArguments = new List<ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute>>();
 
             int currentPositionalIndex = 0;
-            ContainerDefinition.ArgumentProperty<NamedArgumentAttribute> currentNamedArgument = null;
+            ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> currentNamedArgument = null;
             List<string> remainingArguments = new List<string>();
 
             for (int i = 0; i < arguments.Length; i++)
@@ -121,7 +121,7 @@ namespace DotArguments
                         if (currentPositionalIndex < definition.PositionalArguments.Count)
                         {
                             // a positional argument
-                            ContainerDefinition.ArgumentProperty<PositionalArgumentAttribute> currentPositionalArgument = definition.PositionalArguments[currentPositionalIndex];
+                            ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute> currentPositionalArgument = definition.PositionalArguments[currentPositionalIndex];
                             SetValue(currentPositionalArgument.Property, container, currentArgument);
 
                             foundPositionArguments.Add(currentPositionalArgument);

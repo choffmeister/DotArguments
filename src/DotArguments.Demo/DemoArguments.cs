@@ -1,5 +1,3 @@
-using System;
-using DotArguments;
 using DotArguments.Attributes;
 
 namespace DotArgumentsDemo

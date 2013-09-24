@@ -1,21 +1,35 @@
 using System;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DotArguments
 {
     /// <summary>
-    /// Extension methods for <see cref="ContainerDefinition"/> objects.
+    /// Extension methods for <see cref="argumentDefinition"/> objects.
     /// </summary>
-    public static class ContainerDefinitionExtensions
+    public static class ArgumentDefinitionExtensions
     {
+        /// <summary>
+        /// Parse the specified arguments against the definition.
+        /// </summary>
+        /// <returns>The populated container.</returns>
+        /// <param name="definition">The definition.</param>
+        /// <param name="arguments">The arguments.</param>
+        /// <typeparam name="T">The container type.</typeparam>
+        public static T Parse<T>(this ArgumentDefinition definition, string[] arguments)
+            where T : new()
+        {
+            return ArgumentParser<T>.Parse(definition, arguments);
+        }
+
         /// <summary>
         /// Generates a string for console output that explains the usage.
         /// </summary>
         /// <returns>The usage string.</returns>
-        /// <param name="definition">The container definition.</param>
+        /// <param name="definition">The argument definition.</param>
         /// <param name="executableName">The name of the executable.</param>
-        public static string GenerateUsageString(this ContainerDefinition definition, string executableName)
+        public static string GenerateUsageString(this ArgumentDefinition definition, string executableName)
         {
             bool hasPositionalArguments = definition.PositionalArguments.Count > 0;
             bool hasNamedArguments = definition.LongNamedArguments.Count > 0;

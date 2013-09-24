@@ -10,7 +10,7 @@ namespace DotArguments
     /// <summary>
     /// Definition for a container for command line arguments.
     /// </summary>
-    public class ContainerDefinition
+    public class ArgumentDefinition
     {
         private static readonly Regex LongNameRegex = new Regex(@"^[a-zA-Z]([\-|_]?[a-zA-Z0-9]+)*$", RegexOptions.Compiled);
         private readonly Type containerType;
@@ -20,10 +20,10 @@ namespace DotArguments
         private ArgumentProperty<RemainingArgumentsAttribute> remainingArguments;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ContainerDefinition"/> class.
+        /// Initializes a new instance of the <see cref="ArgumentDefinition"/> class.
         /// </summary>
         /// <param name="containerType">The type of the container.</param>
-        public ContainerDefinition(Type containerType)
+        public ArgumentDefinition(Type containerType)
         {
             // initialize
             this.containerType = containerType;
@@ -143,12 +143,12 @@ namespace DotArguments
                     }
                     else
                     {
-                        throw new ContainerDefinitionException(string.Format("The property {0}::{1} has an unsupported {2} of type {3}", this.containerType.FullName, pi.Name, typeof(ArgumentAttribute).Name, attributeType.FullName));
+                        throw new ArgumentDefinitionException(string.Format("The property {0}::{1} has an unsupported {2} of type {3}", this.containerType.FullName, pi.Name, typeof(ArgumentAttribute).Name, attributeType.FullName));
                     }
                 }
                 else if (attributes.Count > 1)
                 {
-                    throw new ContainerDefinitionException(string.Format("The property {0}::{1} has more than one {2}", this.containerType.FullName, pi.Name, typeof(ArgumentAttribute).Name));
+                    throw new ArgumentDefinitionException(string.Format("The property {0}::{1} has more than one {2}", this.containerType.FullName, pi.Name, typeof(ArgumentAttribute).Name));
                 }
             }
 
@@ -159,7 +159,7 @@ namespace DotArguments
         {
             if (pi.PropertyType != neededType)
             {
-                throw new ContainerDefinitionException(string.Format("The property {0}::{1} must have type {2}", this.containerType.FullName, pi.Name, neededType.FullName));
+                throw new ArgumentDefinitionException(string.Format("The property {0}::{1} must have type {2}", this.containerType.FullName, pi.Name, neededType.FullName));
             }
         }
 
@@ -167,7 +167,7 @@ namespace DotArguments
         {
             if (this.remainingArguments != null)
             {
-                throw new ContainerDefinitionException(string.Format("The {0} can only be used once", typeof(RemainingArgumentsAttribute).Name));
+                throw new ArgumentDefinitionException(string.Format("The {0} can only be used once", typeof(RemainingArgumentsAttribute).Name));
             }
         }
 
@@ -175,7 +175,7 @@ namespace DotArguments
         {
             if (this.positionalArguments.ContainsKey(index))
             {
-                throw new ContainerDefinitionException(string.Format("Index {0} is already in use", index));
+                throw new ArgumentDefinitionException(string.Format("Index {0} is already in use", index));
             }
         }
 
@@ -183,7 +183,7 @@ namespace DotArguments
         {
             if (this.longNamedArguments.ContainsKey(longName))
             {
-                throw new ContainerDefinitionException(string.Format("Long name {0} is already in use", longName));
+                throw new ArgumentDefinitionException(string.Format("Long name {0} is already in use", longName));
             }
         }
 
@@ -191,7 +191,7 @@ namespace DotArguments
         {
             if (this.shortNamedArguments.ContainsKey(shortName))
             {
-                throw new ContainerDefinitionException(string.Format("Short name {0} is already in use", shortName));
+                throw new ArgumentDefinitionException(string.Format("Short name {0} is already in use", shortName));
             }
         }
 
@@ -199,12 +199,12 @@ namespace DotArguments
         {
             if (!LongNameRegex.Match(longName).Success)
             {
-                throw new ContainerDefinitionException(string.Format("Long name {0} is invalid. Must match regex ^[a-zA-Z]([\\-|_]?[a-zA-Z0-9]+)*$", longName));
+                throw new ArgumentDefinitionException(string.Format("Long name {0} is invalid. Must match regex ^[a-zA-Z]([\\-|_]?[a-zA-Z0-9]+)*$", longName));
             }
 
             if (longName.Length < 2)
             {
-                throw new ContainerDefinitionException(string.Format("Long name {0} is invalid. Must have at least 2 characters", longName));
+                throw new ArgumentDefinitionException(string.Format("Long name {0} is invalid. Must have at least 2 characters", longName));
             }
         }
 
@@ -217,14 +217,14 @@ namespace DotArguments
 
             if (indices.Count > 0 && indices[0] != 0)
             {
-                throw new ContainerDefinitionException("Indices must start at 0");
+                throw new ArgumentDefinitionException("Indices must start at 0");
             }
 
             for (int i = 1; i < indices.Count; i++)
             {
                 if (indices[i] != i)
                 {
-                    throw new ContainerDefinitionException(string.Format("Index {0} is missing", i));
+                    throw new ArgumentDefinitionException(string.Format("Index {0} is missing", i));
                 }
             }
         }

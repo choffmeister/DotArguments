@@ -17,7 +17,7 @@ namespace DotArguments.Tests
         [Test]
         public void TestNonCorruptContainer1()
         {
-            var def = new ContainerDefinition(typeof(ArgumentContainer1));
+            var def = new ArgumentDefinition(typeof(ArgumentContainer1));
 
             Assert.AreEqual(0, def.PositionalArguments.Count);
             Assert.AreEqual(0, def.LongNamedArguments.Count);
@@ -31,7 +31,7 @@ namespace DotArguments.Tests
         [Test]
         public void TestNonCorruptContainer2()
         {
-            var def = new ContainerDefinition(typeof(ArgumentContainer2));
+            var def = new ArgumentDefinition(typeof(ArgumentContainer2));
 
             Assert.AreEqual(1, def.PositionalArguments.Count);
             Assert.AreEqual(1, def.LongNamedArguments.Count);
@@ -49,7 +49,7 @@ namespace DotArguments.Tests
         [Test]
         public void TestNonCorruptContainer3()
         {
-            var def = new ContainerDefinition(typeof(ArgumentContainer3));
+            var def = new ArgumentDefinition(typeof(ArgumentContainer3));
 
             Assert.AreEqual(1, def.PositionalArguments.Count);
             Assert.AreEqual(0, def.LongNamedArguments.Count);
@@ -66,7 +66,7 @@ namespace DotArguments.Tests
         [Test]
         public void TestNonCorruptContainer4()
         {
-            var def = new ContainerDefinition(typeof(ArgumentContainer4));
+            var def = new ArgumentDefinition(typeof(ArgumentContainer4));
 
             Assert.AreEqual(0, def.PositionalArguments.Count);
             Assert.AreEqual(1, def.LongNamedArguments.Count);
@@ -83,7 +83,7 @@ namespace DotArguments.Tests
         [Test]
         public void TestNonCorruptContainer5()
         {
-            var def = new ContainerDefinition(typeof(ArgumentContainer5));
+            var def = new ArgumentDefinition(typeof(ArgumentContainer5));
 
             Assert.AreEqual(0, def.PositionalArguments.Count);
             Assert.AreEqual(2, def.LongNamedArguments.Count);
@@ -103,11 +103,11 @@ namespace DotArguments.Tests
         public void TestDetectionOfMultipleArgumentAttributes()
         {
             AssertExceptionWithMessage(
-                typeof(ContainerDefinitionException),
+                typeof(ArgumentDefinitionException),
                 Is.StringContaining("more than one"),
                 () =>
             {
-                new ContainerDefinition(typeof(CorruptArgumentContainer1));
+                new ArgumentDefinition(typeof(CorruptArgumentContainer1));
             });
         }
 
@@ -118,27 +118,27 @@ namespace DotArguments.Tests
         public void TestDetectionOfPositionalIndicesProblems()
         {
             AssertExceptionWithMessage(
-                typeof(ContainerDefinitionException),
+                typeof(ArgumentDefinitionException),
                 Is.StringContaining("already in use"),
                 () =>
             {
-                new ContainerDefinition(typeof(CorruptArgumentContainer2));
+                new ArgumentDefinition(typeof(CorruptArgumentContainer2));
             });
 
             AssertExceptionWithMessage(
-                typeof(ContainerDefinitionException),
+                typeof(ArgumentDefinitionException),
                 Is.StringContaining("is missing"),
                 () =>
             {
-                new ContainerDefinition(typeof(CorruptArgumentContainer3));
+                new ArgumentDefinition(typeof(CorruptArgumentContainer3));
             });
 
             AssertExceptionWithMessage(
-                typeof(ContainerDefinitionException),
+                typeof(ArgumentDefinitionException),
                 Is.StringContaining("must start at"),
                 () =>
             {
-                new ContainerDefinition(typeof(CorruptArgumentContainer4));
+                new ArgumentDefinition(typeof(CorruptArgumentContainer4));
             });
         }
 
@@ -149,19 +149,19 @@ namespace DotArguments.Tests
         public void TestDetectionOfNamingProblems()
         {
             AssertExceptionWithMessage(
-                typeof(ContainerDefinitionException),
+                typeof(ArgumentDefinitionException),
                 Is.StringContaining("Long name").And.StringContaining("already in use"),
                 () =>
             {
-                new ContainerDefinition(typeof(CorruptArgumentContainer5));
+                new ArgumentDefinition(typeof(CorruptArgumentContainer5));
             });
 
             AssertExceptionWithMessage(
-                typeof(ContainerDefinitionException),
+                typeof(ArgumentDefinitionException),
                 Is.StringContaining("Short name").And.StringContaining("already in use"),
                 () =>
             {
-                new ContainerDefinition(typeof(CorruptArgumentContainer6));
+                new ArgumentDefinition(typeof(CorruptArgumentContainer6));
             });
         }
 
@@ -173,11 +173,11 @@ namespace DotArguments.Tests
         public void TestDetectionOfMultipleRemainingArguments()
         {
             AssertExceptionWithMessage(
-                typeof(ContainerDefinitionException),
+                typeof(ArgumentDefinitionException),
                 Is.StringContaining("can only be used once"),
                 () =>
             {
-                new ContainerDefinition(typeof(CorruptArgumentContainer7));
+                new ArgumentDefinition(typeof(CorruptArgumentContainer7));
             });
         }
 
@@ -189,11 +189,11 @@ namespace DotArguments.Tests
         public void TestDetectionOfRemainingArgumentsOnNonStringArrays()
         {
             AssertExceptionWithMessage(
-                typeof(ContainerDefinitionException),
+                typeof(ArgumentDefinitionException),
                 Is.StringContaining("must have type System.String[]"),
                 () =>
             {
-                new ContainerDefinition(typeof(CorruptArgumentContainer8));
+                new ArgumentDefinition(typeof(CorruptArgumentContainer8));
             });
         }
 
@@ -205,11 +205,11 @@ namespace DotArguments.Tests
         public void TestDetectionOfNamedSwitchArgumentsOnNonBooleans()
         {
             AssertExceptionWithMessage(
-                typeof(ContainerDefinitionException),
+                typeof(ArgumentDefinitionException),
                 Is.StringContaining("must have type System.Boolean"),
                 () =>
             {
-                new ContainerDefinition(typeof(CorruptArgumentContainer9));
+                new ArgumentDefinition(typeof(CorruptArgumentContainer9));
             });
         }
 
@@ -220,19 +220,19 @@ namespace DotArguments.Tests
         public void TestDetectionOfInvalidLongNames()
         {
             AssertExceptionWithMessage(
-                typeof(ContainerDefinitionException),
+                typeof(ArgumentDefinitionException),
                 Is.StringContaining("at least 2 characters"),
                 () =>
             {
-                new ContainerDefinition(typeof(CorruptArgumentContainer10));
+                new ArgumentDefinition(typeof(CorruptArgumentContainer10));
             });
 
             AssertExceptionWithMessage(
-                typeof(ContainerDefinitionException),
+                typeof(ArgumentDefinitionException),
                 Is.StringContaining("match regex"),
                 () =>
             {
-                new ContainerDefinition(typeof(CorruptArgumentContainer11));
+                new ArgumentDefinition(typeof(CorruptArgumentContainer11));
             });
         }
 
