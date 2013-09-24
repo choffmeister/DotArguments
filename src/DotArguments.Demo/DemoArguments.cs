@@ -46,5 +46,12 @@ namespace DotArgumentsDemo
         [NamedSwitchArgument("verbose", 'v')]
         [ArgumentDescription(Short = "enable verbose console output")]
         public bool Verbose { get; set; }
+
+        /// <summary>
+        /// Gets or sets the remaining arguments.
+        /// </summary>
+        /// <value>The remaining arguments.</value>
+        [RemainingArguments]
+        public string[] RemainingArguments { get; set; }
     }
 }

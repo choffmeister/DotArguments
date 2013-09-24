@@ -33,6 +33,7 @@ namespace DotArguments
             string executableName = System.AppDomain.CurrentDomain.FriendlyName;
             bool hasPositionalArguments = definition.PositionalArguments.Count > 0;
             bool hasNamedArguments = definition.LongNamedArguments.Count > 0;
+            bool hasRemainingArguments = definition.RemainingArguments != null;
 
             StringBuilder sb = new StringBuilder();
 
@@ -55,6 +56,11 @@ namespace DotArguments
                 {
                     sb.Append(string.Format(" [{0}]", attr.Name));
                 }
+            }
+
+            if (hasRemainingArguments)
+            {
+                sb.Append(" [...]");
             }
 
             sb.AppendLine();

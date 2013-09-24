@@ -27,6 +27,7 @@ namespace DotArgumentsDemo
                 Console.WriteLine("Name: {0}", arguments.Name ?? "(null)");
                 Console.WriteLine("Age: {0}", arguments.Age.HasValue ? arguments.Age.Value.ToString() : "(null)");
                 Console.WriteLine("Verbose: {0}", arguments.Verbose);
+                Console.WriteLine("Remaining: [{0}]", string.Join(",", arguments.RemainingArguments));
 
                 Environment.Exit(0);
             }
