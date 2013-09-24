@@ -42,7 +42,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContainerDefinitionTest.cs" />
     <Compile Include="TestContainers\ArgumentContainer1.cs" />
     <Compile Include="TestContainers\ArgumentContainer2.cs" />
     <Compile Include="TestContainers\CorruptArgumentContainer1.cs" />
@@ -61,6 +60,8 @@
     <Compile Include="TestContainers\ArgumentContainer6.cs" />
     <Compile Include="TestContainers\CorruptArgumentContainer10.cs" />
     <Compile Include="TestContainers\CorruptArgumentContainer11.cs" />
+    <Compile Include="TestContainers\ArgumentContainer7.cs" />
+    <Compile Include="ArgumentDefinitionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TestContainers\" />

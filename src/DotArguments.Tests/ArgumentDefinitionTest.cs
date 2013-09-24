@@ -6,10 +6,10 @@ using NUnit.Framework.Constraints;
 namespace DotArguments.Tests
 {
     /// <summary>
-    /// Container definition test.
+    /// Argument definition test.
     /// </summary>
     [TestFixture]
-    public class ContainerDefinitionTest
+    public class ArgumentDefinitionTest
     {
         /// <summary>
         /// Test non corrupt containers.
@@ -93,6 +93,26 @@ namespace DotArguments.Tests
             Assert.AreEqual("Verbose", def.LongNamedArguments["verbose"].Property.Name);
             Assert.AreEqual("Verbose", def.ShortNamedArguments['v'].Property.Name);
             Assert.AreEqual("Name", def.LongNamedArguments["name"].Property.Name);
+        }
+
+        /// <summary>
+        /// Test non corrupt containers.
+        /// </summary>
+        [Test]
+        public void TestNonCorruptContainer6()
+        {
+            var def = new ArgumentDefinition(typeof(ArgumentContainer7));
+
+            Assert.AreEqual(0, def.PositionalArguments.Count);
+            Assert.AreEqual(3, def.LongNamedArguments.Count);
+            Assert.AreEqual(0, def.ShortNamedArguments.Count);
+            Assert.IsNull(def.RemainingArguments);
+
+            Assert.AreEqual("desc-short-1", def.LongNamedArguments["name1"].DescriptionAttribute.Short);
+            Assert.AreEqual("desc-long-1", def.LongNamedArguments["name1"].DescriptionAttribute.Long);
+            Assert.AreEqual("desc-short-2", def.LongNamedArguments["name2"].DescriptionAttribute.Short);
+            Assert.AreEqual("desc-long-2", def.LongNamedArguments["name2"].DescriptionAttribute.Long);
+            Assert.IsNull(def.LongNamedArguments["name3"].DescriptionAttribute);
         }
 
         /// <summary>
