@@ -22,16 +22,35 @@ namespace DotArguments
         /// <param name="arguments">The arguments.</param>
         public static T Parse(string[] arguments)
         {
+            ContainerDefinition containerDefinition = new ContainerDefinition(typeof(T));
+
+            return Parse(containerDefinition, arguments);
+        }
+
+        /// <summary>
+        /// Parse the specified arguments and returns a new argument container
+        /// object.
+        /// </summary>
+        /// <returns>The argument container.</returns>
+        /// <param name="containerDefinition">The container definition.</param>
+        /// <param name="arguments">The arguments.</param>
+        public static T Parse(ContainerDefinition containerDefinition, string[] arguments)
+        {
+            if (containerDefinition == null)
+                throw new ArgumentNullException("containerDefinition");
             if (arguments == null)
                 throw new ArgumentNullException("arguments");
-
-            ContainerDefinition definition = new ContainerDefinition(typeof(T));
-            T container = new T();
+            if (containerDefinition.ContainerType != typeof(T))
+                throw new ArgumentException("ContainerDefinition.ContainerType must match T", "containerDefinition");
 
             // ensure that any exception is wrapped into an ArgumentParserException
             try
             {
-                ConsumeArguments(definition, container, arguments);
+                T container = new T();
+
+                ConsumeArguments(containerDefinition, container, arguments);
+
+                return container;
             }
             catch (ArgumentParserException ex)
             {
@@ -43,8 +62,6 @@ namespace DotArguments
                 // wrap
                 throw new ArgumentParserException("Error while parsing", ex);
             }
-
-            return container;
         }
 
         private static void ConsumeArguments(ContainerDefinition definition, T container, string[] arguments)

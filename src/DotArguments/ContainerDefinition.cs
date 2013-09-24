@@ -36,6 +36,15 @@ namespace DotArguments
         }
 
         /// <summary>
+        /// Gets the type of the container.
+        /// </summary>
+        /// <value>The type of the container.</value>
+        public Type ContainerType
+        {
+            get { return this.containerType; }
+        }
+
+        /// <summary>
         /// Gets the positional arguments.
         /// </summary>
         /// <value>The positional arguments.</value>
