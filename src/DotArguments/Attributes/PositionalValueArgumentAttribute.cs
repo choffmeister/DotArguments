@@ -12,15 +12,10 @@ namespace DotArguments.Attributes
         /// Initializes a new instance of the <see cref="PositionalValueArgumentAttribute"/> class.
         /// </summary>
         /// <param name="index">The index.</param>
-        public PositionalValueArgumentAttribute(int index)
-            : base(index)
+        /// <param name="name">The name.</param>
+        public PositionalValueArgumentAttribute(int index, string name)
+            : base(index, name)
         {
         }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is optional.
-        /// </summary>
-        /// <value><c>true</c> if this instance is optional; otherwise, <c>false</c>.</value>
-        public bool IsOptional { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace DotArguments.Tests.TestContainers
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
-        [PositionalValueArgumentAttribute(0)]
+        [PositionalValueArgumentAttribute(0, "age")]
         [NamedValueArgumentAttribute("age", 'a')]
         public string Name { get; set; }
     }

@@ -26,14 +26,14 @@ namespace DotArguments.Tests.TestContainers
         /// Gets or sets the age1.
         /// </summary>
         /// <value>The age1.</value>
-        [PositionalValueArgument(0)]
+        [PositionalValueArgument(0, "age")]
         public int Age1 { get; set; }
 
         /// <summary>
         /// Gets or sets the age2.
         /// </summary>
         /// <value>The age2.</value>
-        [PositionalValueArgument(1, IsOptional = true)]
+        [PositionalValueArgument(1, "age2", IsOptional = true)]
         public int? Age2 { get; set; }
     }
 }

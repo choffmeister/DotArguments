@@ -11,14 +11,14 @@ namespace DotArguments.Tests.TestContainers
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
-        [PositionalValueArgumentAttribute(1)]
+        [PositionalValueArgumentAttribute(1, "name")]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the age.
         /// </summary>
         /// <value>The name.</value>
-        [PositionalValueArgumentAttribute(2)]
+        [PositionalValueArgumentAttribute(2, "age")]
         public int Age { get; set; }
     }
 }

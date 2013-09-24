@@ -81,12 +81,13 @@ namespace DotArguments
                 if (attributes.Count == 1)
                 {
                     ArgumentAttribute attribute = attributes.Single();
+                    ArgumentDescriptionAttribute descriptionAttribute = pi.GetCustomAttributes(true).OfType<ArgumentDescriptionAttribute>().SingleOrDefault();
                     Type attributeType = attribute.GetType();
 
                     if (attributeType == typeof(PositionalValueArgumentAttribute))
                     {
                         var castedAttribute = attribute as PositionalValueArgumentAttribute;
-                        var argumentProperty = new ArgumentProperty<PositionalArgumentAttribute>(castedAttribute, pi);
+                        var argumentProperty = new ArgumentProperty<PositionalArgumentAttribute>(castedAttribute, descriptionAttribute, pi);
 
                         this.EnsureIndexIsFree(castedAttribute.Index);
                         this.positionalArguments.Add(castedAttribute.Index, argumentProperty);
@@ -94,7 +95,7 @@ namespace DotArguments
                     else if (attributeType == typeof(NamedValueArgumentAttribute))
                     {
                         var castedAttribute = attribute as NamedValueArgumentAttribute;
-                        var argumentProperty = new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi);
+                        var argumentProperty = new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, descriptionAttribute, pi);
 
                         this.EnsureLongNameIsFree(castedAttribute.LongName);
                         this.EnsureLongNameFormat(castedAttribute.LongName);
@@ -109,7 +110,7 @@ namespace DotArguments
                     else if (attributeType == typeof(NamedSwitchArgumentAttribute))
                     {
                         var castedAttribute = attribute as NamedSwitchArgumentAttribute;
-                        var argumentProperty = new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, pi);
+                        var argumentProperty = new ArgumentProperty<NamedArgumentAttribute>(castedAttribute, descriptionAttribute, pi);
 
                         this.EnsureLongNameIsFree(castedAttribute.LongName);
                         this.EnsureLongNameFormat(castedAttribute.LongName);
@@ -125,7 +126,7 @@ namespace DotArguments
                     else if (attributeType == typeof(RemainingArgumentsAttribute))
                     {
                         var castedAttribute = attribute as RemainingArgumentsAttribute;
-                        var argumentProperty = new ArgumentProperty<RemainingArgumentsAttribute>(castedAttribute, pi);
+                        var argumentProperty = new ArgumentProperty<RemainingArgumentsAttribute>(castedAttribute, descriptionAttribute, pi);
 
                         this.EnsureRemainingArgumentsIsFree();
                         this.EnsurePropertyType(pi, typeof(string[]));
@@ -227,16 +228,19 @@ namespace DotArguments
             where T : ArgumentAttribute
         {
             private readonly T attribute;
+            private readonly ArgumentDescriptionAttribute descriptionAttribute;
             private readonly PropertyInfo property;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="ArgumentProperty{T}"/> class.
             /// </summary>
             /// <param name="attribute">The argument attribute.</param>
+            /// <param name="descriptionAttribute">The description attribute.</param>
             /// <param name="property">The property info.</param>
-            public ArgumentProperty(T attribute, PropertyInfo property)
+            public ArgumentProperty(T attribute, ArgumentDescriptionAttribute descriptionAttribute, PropertyInfo property)
             {
                 this.attribute = attribute;
+                this.descriptionAttribute = descriptionAttribute;
                 this.property = property;
             }
 
@@ -247,6 +251,15 @@ namespace DotArguments
             public T Attribute
             {
                 get { return this.attribute; }
+            }
+
+            /// <summary>
+            /// Gets the description attribute.
+            /// </summary>
+            /// <value>The description attribute.</value>
+            public ArgumentDescriptionAttribute DescriptionAttribute
+            {
+                get { return this.descriptionAttribute; }
             }
 
             /// <summary>
