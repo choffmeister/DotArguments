@@ -39,7 +39,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\..\dotarguments\src\DotArguments\DotArguments.csproj">
+    <ProjectReference Include="..\DotArguments\DotArguments.csproj">
       <Project>{8836D5F7-DD21-4BE1-9562-7499D92644CB}</Project>
       <Name>DotArguments</Name>
     </ProjectReference>
