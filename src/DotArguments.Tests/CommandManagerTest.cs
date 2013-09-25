@@ -15,7 +15,8 @@ namespace DotArguments.Tests
         [Test]
         public void TestExceptionOnMissingCommandName()
         {
-            CommandManager commandManager = new CommandManager();
+            GNUArgumentParser argumentParser = new GNUArgumentParser();
+            CommandManager commandManager = new CommandManager(argumentParser);
             commandManager.RegisterCommand(typeof(Command1));
             commandManager.RegisterCommand(typeof(Command2));
 
@@ -34,7 +35,8 @@ namespace DotArguments.Tests
         [Test]
         public void TestExceptionOnUnknownCommandName()
         {
-            CommandManager commandManager = new CommandManager();
+            GNUArgumentParser argumentParser = new GNUArgumentParser();
+            CommandManager commandManager = new CommandManager(argumentParser);
             commandManager.RegisterCommand(typeof(Command1));
             commandManager.RegisterCommand(typeof(Command2));
 
@@ -53,7 +55,8 @@ namespace DotArguments.Tests
         [Test]
         public void TestCorrectDelegationToCommands()
         {
-            CommandManager commandManager = new CommandManager();
+            GNUArgumentParser argumentParser = new GNUArgumentParser();
+            CommandManager commandManager = new CommandManager(argumentParser);
             commandManager.RegisterCommand(typeof(Command1));
             commandManager.RegisterCommand(typeof(Command2));
 
@@ -68,7 +71,7 @@ namespace DotArguments.Tests
                 Is.StringContaining("Name: Tom").And.StringContaining("Age: 12"),
             () =>
                 {
-                Assert.AreEqual(0, commandManager.Execute(new string[] { "cmd1", "Tom", "--age", "12" }));
+                Assert.AreEqual(0, commandManager.Execute(new string[] { "cmd1", "Tom", "--age=12" }));
             });
 
             AssertHelper.AssertWithConsoleOutput(

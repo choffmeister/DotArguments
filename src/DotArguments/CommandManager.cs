@@ -10,13 +10,16 @@ namespace DotArguments
     /// </summary>
     public class CommandManager
     {
+        private readonly IArgumentParser argumentParser;
         private readonly Dictionary<string, CommandDefinition> commands;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandManager"/> class.
         /// </summary>
-        public CommandManager()
+        /// <param name="argumentParser">The argument parser to use.</param>
+        public CommandManager(IArgumentParser argumentParser)
         {
+            this.argumentParser = argumentParser;
             this.commands = new Dictionary<string, CommandDefinition>();
         }
 
@@ -51,8 +54,7 @@ namespace DotArguments
                 throw new CommandManagerException(string.Format("Command name {0} is unknown", commandName));
             }
 
-            GNUArgumentParser argumentParser = new GNUArgumentParser();
-            ICommand command = (ICommand)argumentParser.Parse(commandDefinition.ArgumentDefinition, commandArguments);
+            ICommand command = (ICommand)this.argumentParser.Parse(commandDefinition.ArgumentDefinition, commandArguments);
 
             return command.Execute();
         }

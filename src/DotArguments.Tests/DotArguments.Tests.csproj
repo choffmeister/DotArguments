@@ -66,6 +66,7 @@
     <Compile Include="CommandManagerTest.cs" />
     <Compile Include="GNUArgumentParserTest.cs" />
     <Compile Include="AssertHelper.cs" />
+    <Compile Include="TestContainers\ArgumentContainer8.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TestContainers\" />

@@ -67,7 +67,7 @@ namespace DotArguments
 
             if (hasNamedArguments)
             {
-                sb.Append(" [options]");
+                sb.Append(" [options] [--]");
             }
 
             foreach (var arg in definition.PositionalArguments.OrderBy(n => n.Key).Select(n => n.Value))
@@ -129,6 +129,7 @@ namespace DotArguments
 
         private static void ConsumeArguments(ArgumentDefinition definition, object container, string[] arguments)
         {
+            bool hadDoubleDash = false;
             var foundNamedArguments = new List<ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute>>();
             var foundPositionArguments = new List<ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute>>();
 
@@ -140,15 +141,37 @@ namespace DotArguments
             {
                 string currentArgument = arguments[i];
 
-                if (currentNamedArgument == null)
+                if (currentArgument == "--" && !hadDoubleDash)
                 {
-                    if (currentArgument.StartsWith("--", StringComparison.InvariantCulture))
+                    hadDoubleDash = true;
+                }
+                else if (currentNamedArgument == null)
+                {
+                    if (currentArgument.StartsWith("--", StringComparison.InvariantCulture) && !hadDoubleDash)
                     {
+                        string[] parts = currentArgument.Substring(2).Split(new char[] { '=' }, 2, StringSplitOptions.RemoveEmptyEntries);
+
                         // a new long named argument
-                        string longName = currentArgument.Substring(2);
+                        string longName = parts[0];
                         currentNamedArgument = definition.LongNamedArguments[longName];
 
-                        if (currentNamedArgument.Attribute.GetType() == typeof(NamedSwitchArgumentAttribute))
+                        if (currentNamedArgument.Attribute.GetType() == typeof(NamedValueArgumentAttribute))
+                        {
+                            if (parts.Length == 2)
+                            {
+                                string value = parts[1];
+
+                                SetValue(currentNamedArgument.Property, container, value);
+
+                                foundNamedArguments.Add(currentNamedArgument);
+                                currentNamedArgument = null;
+                            }
+                            else
+                            {
+                                throw new ArgumentParserException("Present long named value arguments must have a value");
+                            }
+                        }
+                        else if (currentNamedArgument.Attribute.GetType() == typeof(NamedSwitchArgumentAttribute))
                         {
                             // a named switch
                             currentNamedArgument.Property.SetValue(container, true, new object[0]);
@@ -157,26 +180,39 @@ namespace DotArguments
                             currentNamedArgument = null;
                         }
                     }
-                    else if (currentArgument.StartsWith("-", StringComparison.InvariantCulture))
+                    else if (currentArgument.StartsWith("-", StringComparison.InvariantCulture) && !hadDoubleDash)
                     {
-                        if (currentArgument.Length == 2)
-                        {
-                            // a new short named argument
-                            char shortName = currentArgument[1];
-                            currentNamedArgument = definition.ShortNamedArguments[shortName];
+                        char shortName = currentArgument[1];
+                        currentNamedArgument = definition.ShortNamedArguments[shortName];
 
-                            if (currentNamedArgument.Attribute.GetType() == typeof(NamedSwitchArgumentAttribute))
+                        if (currentNamedArgument.Attribute.GetType() == typeof(NamedValueArgumentAttribute))
+                        {
+                            if (currentArgument.Length == 2)
                             {
-                                // a named switch
-                                currentNamedArgument.Property.SetValue(container, true, new object[0]);
+                                currentNamedArgument = definition.ShortNamedArguments[shortName];
+                            }
+                            else
+                            {
+                                string value = currentArgument.Substring(2);
+
+                                SetValue(currentNamedArgument.Property, container, value);
 
                                 foundNamedArguments.Add(currentNamedArgument);
                                 currentNamedArgument = null;
                             }
                         }
-                        else
+                        else if (currentNamedArgument.Attribute.GetType() == typeof(NamedSwitchArgumentAttribute))
                         {
-                            throw new ArgumentParserException("Short named arguments must contain out of one character");
+                            for (int j = 1; j < currentArgument.Length; j++)
+                            {
+                                shortName = currentArgument[j];
+                                currentNamedArgument = definition.ShortNamedArguments[shortName];
+
+                                currentNamedArgument.Property.SetValue(container, true, new object[0]);
+
+                                foundNamedArguments.Add(currentNamedArgument);
+                                currentNamedArgument = null;
+                            }
                         }
                     }
                     else
