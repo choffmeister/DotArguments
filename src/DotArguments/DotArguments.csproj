@@ -47,6 +47,10 @@
     <Compile Include="ArgumentDefinition.cs" />
     <Compile Include="ArgumentDefinitionException.cs" />
     <Compile Include="ArgumentDefinitionExtensions.cs" />
+    <Compile Include="ICommand.cs" />
+    <Compile Include="CommandManager.cs" />
+    <Compile Include="CommandAttribute.cs" />
+    <Compile Include="CommandManagerException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
