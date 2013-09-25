@@ -1,3 +1,4 @@
+using DotArguments.Exceptions;
 using DotArguments.Tests.TestCommands;
 using NUnit.Framework;
 

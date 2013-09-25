@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace DotArguments
+namespace DotArguments.Exceptions
 {
     /// <summary>
     /// Base exception for errors while argument parsing.

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using DotArguments.Attributes;
+using DotArguments.Exceptions;
 
 namespace DotArguments
 {

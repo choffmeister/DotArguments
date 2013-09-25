@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using DotArguments;
 using DotArguments.Attributes;
+using DotArguments.Exceptions;
 
 namespace DotArguments
 {

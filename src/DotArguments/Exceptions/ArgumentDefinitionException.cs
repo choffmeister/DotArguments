@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace DotArguments
+namespace DotArguments.Exceptions
 {
     /// <summary>
     /// Base exception the indicates a problem with an argument argument definition.
