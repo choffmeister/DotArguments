@@ -53,7 +53,7 @@ namespace DotArguments
             if (arguments == null)
                 throw new ArgumentNullException("arguments");
             if (arguments.Length == 0)
-                throw new CommandManagerException("Command name is missing");
+                throw new CommandManagerException(this, "Command name is missing");
 
             string commandName = arguments.First();
             string[] commandArguments = arguments.Skip(1).ToArray();
@@ -61,7 +61,7 @@ namespace DotArguments
 
             if (!this.commands.TryGetValue(commandName, out commandDefinition))
             {
-                throw new CommandManagerException(string.Format("Command name {0} is unknown", commandName));
+                throw new CommandManagerException(this, string.Format("Command name {0} is unknown", commandName));
             }
 
             try
@@ -73,7 +73,7 @@ namespace DotArguments
             }
             catch (Exception ex)
             {
-                throw new CommandManagerException(commandDefinition, ex.Message, ex);
+                throw new CommandManagerException(this, commandDefinition, ex.Message, ex);
             }
         }
 
