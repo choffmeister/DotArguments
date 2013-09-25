@@ -267,5 +267,52 @@ namespace DotArguments.Tests
                 this.parser.Parse<ArgumentContainer6>(definition, new string[] { "--name1=Tom", "notanumber" });
             });
         }
+
+        /// <summary>
+        /// Test case 13.
+        /// </summary>
+        [Test]
+        public void TestCase13()
+        {
+            AssertHelper.AssertExceptionWithMessage(
+                typeof(UnknownNamedArgumentException),
+                Is.StringContaining("bge"),
+            () =>
+                {
+                ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer2));
+
+                this.parser.Parse<ArgumentContainer2>(definition, new string[] { "--bge=10", "Tom" });
+            });
+
+            AssertHelper.AssertExceptionWithMessage(
+                typeof(UnknownNamedArgumentException),
+                Is.StringContaining("b"),
+            () =>
+                {
+                ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer2));
+
+                this.parser.Parse<ArgumentContainer2>(definition, new string[] { "-b=10", "Tom" });
+            });
+
+            AssertHelper.AssertExceptionWithMessage(
+                typeof(UnknownNamedArgumentException),
+                Is.StringContaining("w"),
+            () =>
+                {
+                ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer4));
+
+                this.parser.Parse<ArgumentContainer4>(definition, new string[] { "-w" });
+            });
+
+            AssertHelper.AssertExceptionWithMessage(
+                typeof(UnknownNamedArgumentException),
+                Is.StringContaining("w"),
+            () =>
+                {
+                ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer4));
+
+                this.parser.Parse<ArgumentContainer4>(definition, new string[] { "-vw" });
+            });
+        }
     }
 }

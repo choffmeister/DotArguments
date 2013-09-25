@@ -107,6 +107,44 @@ namespace DotArguments
         }
 
         /// <summary>
+        /// Tries to get the named argument by its long name. Throws an <see cref="UnknownNamedArgumentException"/>
+        /// is it does not exist. 
+        /// </summary>
+        /// <returns>The named argument.</returns>
+        /// <param name="definition">The argument definition.</param>
+        /// <param name="longName">The long name.</param>
+        protected static ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> GetLongNamedArgument(ArgumentDefinition definition, string longName)
+        {
+            ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument = null;
+
+            if (!definition.LongNamedArguments.TryGetValue(longName, out argument))
+            {
+                throw new UnknownNamedArgumentException(longName);
+            }
+
+            return argument;
+        }
+
+        /// <summary>
+        /// Tries to get the named argument by its short name. Throws an <see cref="UnknownNamedArgumentException"/>
+        /// is it does not exist. 
+        /// </summary>
+        /// <returns>The named argument.</returns>
+        /// <param name="definition">The argument definition.</param>
+        /// <param name="shortName">The short name.</param>
+        protected static ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> GetShortNamedArgument(ArgumentDefinition definition, char shortName)
+        {
+            ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument = null;
+
+            if (!definition.ShortNamedArguments.TryGetValue(shortName, out argument))
+            {
+                throw new UnknownNamedArgumentException(shortName.ToString());
+            }
+
+            return argument;
+        }
+
+        /// <summary>
         /// Converts and sets a string value to a property.
         /// </summary>
         /// <param name="propertyInfo">The property info.</param>

@@ -45,7 +45,7 @@ namespace DotArguments
 
                         // a new long named argument
                         string longName = parts[0];
-                        currentNamedArgument = definition.LongNamedArguments[longName];
+                        currentNamedArgument = ArgumentParserBase.GetLongNamedArgument(definition, longName);
 
                         if (currentNamedArgument.Attribute.GetType() == typeof(NamedValueArgumentAttribute))
                         {
@@ -75,13 +75,13 @@ namespace DotArguments
                     else if (currentArgument.StartsWith("-", StringComparison.InvariantCulture) && !hadDoubleDash)
                     {
                         char shortName = currentArgument[1];
-                        currentNamedArgument = definition.ShortNamedArguments[shortName];
+                        currentNamedArgument = ArgumentParserBase.GetShortNamedArgument(definition, shortName);
 
                         if (currentNamedArgument.Attribute.GetType() == typeof(NamedValueArgumentAttribute))
                         {
                             if (currentArgument.Length == 2)
                             {
-                                currentNamedArgument = definition.ShortNamedArguments[shortName];
+                                currentNamedArgument = ArgumentParserBase.GetShortNamedArgument(definition, shortName);
                             }
                             else
                             {
@@ -98,7 +98,7 @@ namespace DotArguments
                             for (int j = 1; j < currentArgument.Length; j++)
                             {
                                 shortName = currentArgument[j];
-                                currentNamedArgument = definition.ShortNamedArguments[shortName];
+                                currentNamedArgument = ArgumentParserBase.GetShortNamedArgument(definition, shortName);
 
                                 currentNamedArgument.Property.SetValue(container, true, new object[0]);
 
