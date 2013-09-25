@@ -62,8 +62,12 @@
     <Compile Include="TestContainers\CorruptArgumentContainer11.cs" />
     <Compile Include="TestContainers\ArgumentContainer7.cs" />
     <Compile Include="ArgumentDefinitionTest.cs" />
+    <Compile Include="TestCommands\Command1.cs" />
+    <Compile Include="TestCommands\Command2.cs" />
+    <Compile Include="CommandManagerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TestContainers\" />
+    <Folder Include="TestCommands\" />
   </ItemGroup>
 </Project>
