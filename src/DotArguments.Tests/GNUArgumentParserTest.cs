@@ -207,5 +207,38 @@ namespace DotArguments.Tests
             Assert.AreEqual("-a10", c2.Name);
             Assert.AreEqual(10, c2.Age);
         }
+
+        /// <summary>
+        /// Test case 11.
+        /// </summary>
+        [Test]
+        public void TestCase11()
+        {
+            ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer2));
+
+            AssertHelper.AssertExceptionWithMessage(
+                typeof(NamedValueArgumentValueMissingException),
+                Is.StringContaining("age"),
+                () =>
+            {
+                this.parser.Parse<ArgumentContainer2>(definition, new string[] { "foo1", "--age=" });
+            });
+
+            AssertHelper.AssertExceptionWithMessage(
+                typeof(NamedValueArgumentValueMissingException),
+                Is.StringContaining("age"),
+                () =>
+            {
+                this.parser.Parse<ArgumentContainer2>(definition, new string[] { "--age", "foo2" });
+            });
+
+            AssertHelper.AssertExceptionWithMessage(
+                typeof(NamedValueArgumentValueMissingException),
+                Is.StringContaining("age"),
+                () =>
+            {
+                this.parser.Parse<ArgumentContainer2>(definition, new string[] { "foo3", "-a" });
+            });
+        }
     }
 }

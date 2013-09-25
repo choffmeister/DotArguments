@@ -60,7 +60,7 @@ namespace DotArguments
                             }
                             else
                             {
-                                throw new ArgumentParserException("Present long named value arguments must have a value");
+                                throw new NamedValueArgumentValueMissingException(currentNamedArgument);
                             }
                         }
                         else if (currentNamedArgument.Attribute.GetType() == typeof(NamedSwitchArgumentAttribute))
@@ -141,6 +141,11 @@ namespace DotArguments
             else if (remainingArguments.Count > 0)
             {
                 throw new ArgumentParserException("Too many positional arguments");
+            }
+
+            if (currentNamedArgument != null)
+            {
+                throw new NamedValueArgumentValueMissingException(currentNamedArgument);
             }
 
             ArgumentParserBase.EnsureAllMandatoryArgumentsArePresent(definition, usedNamedArguments, usedPositionalArguments);

@@ -53,6 +53,7 @@
     <Compile Include="Exceptions\ArgumentParserException.cs" />
     <Compile Include="Exceptions\MandatoryArgumentMissingException.cs" />
     <Compile Include="ArgumentParserBase.cs" />
+    <Compile Include="Exceptions\NamedValueArgumentValueMissingException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
