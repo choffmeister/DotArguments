@@ -25,6 +25,15 @@ namespace DotArguments
         }
 
         /// <summary>
+        /// Gets the argument parser.
+        /// </summary>
+        /// <value>The argument parser.</value>
+        public IArgumentParser ArgumentParser
+        {
+            get { return this.argumentParser; }
+        }
+
+        /// <summary>
         /// Gets the commands.
         /// </summary>
         /// <value>The commands.</value>
@@ -55,9 +64,17 @@ namespace DotArguments
                 throw new CommandManagerException(string.Format("Command name {0} is unknown", commandName));
             }
 
-            ICommand command = (ICommand)this.argumentParser.Parse(commandDefinition.ArgumentDefinition, commandArguments);
+            try
+            {
+                ICommand command = (ICommand)this.argumentParser.Parse(commandDefinition.ArgumentDefinition, commandArguments);
+                this.InitializeCommand(command);
 
-            return command.Execute();
+                return command.Execute();
+            }
+            catch (Exception ex)
+            {
+                throw new CommandManagerException(commandDefinition, ex.Message, ex);
+            }
         }
 
         /// <summary>
@@ -69,6 +86,15 @@ namespace DotArguments
             CommandDefinition definition = new CommandDefinition(type);
 
             this.commands.Add(definition.CommandAttribute.Name, definition);
+        }
+
+        /// <summary>
+        /// Is called after creating and populating the command and
+        /// before executing it.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        protected virtual void InitializeCommand(ICommand command)
+        {
         }
 
         /// <summary>

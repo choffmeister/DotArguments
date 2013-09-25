@@ -14,9 +14,10 @@ namespace DotArguments.Exceptions
         /// <summary>
         /// Initializes a new instance of the <see cref="MandatoryArgumentMissingException"/> class.
         /// </summary>
+        /// <param name="argumentParser">The argument parser.</param>
         /// <param name="argument">The argument description.</param>
-        public MandatoryArgumentMissingException(ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument)
-            : base(string.Format("Mandatory argument {0} missing", argument.Attribute.LongName))
+        public MandatoryArgumentMissingException(IArgumentParser argumentParser, ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument)
+            : base(argumentParser, string.Format("Mandatory argument {0} missing", argument.Attribute.LongName))
         {
             this.attribute = argument.Attribute;
             this.property = argument.Property;
@@ -25,9 +26,10 @@ namespace DotArguments.Exceptions
         /// <summary>
         /// Initializes a new instance of the <see cref="MandatoryArgumentMissingException"/> class.
         /// </summary>
+        /// <param name="argumentParser">The argument parser.</param>
         /// <param name="argument">The argument description.</param>
-        public MandatoryArgumentMissingException(ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute> argument)
-            : base(string.Format("Mandatory argument {0} missing", argument.Attribute.Name))
+        public MandatoryArgumentMissingException(IArgumentParser argumentParser, ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute> argument)
+            : base(argumentParser, string.Format("Mandatory argument {0} missing", argument.Attribute.Name))
         {
             this.attribute = argument.Attribute;
             this.property = argument.Property;

@@ -13,9 +13,10 @@ namespace DotArguments.Exceptions
         /// <summary>
         /// Initializes a new instance of the <see cref="TooManyPositionalArgumentsException"/> class.
         /// </summary>
+        /// <param name="argumentParser">The argument parser.</param>
         /// <param name="additionalArguments">Additional arguments.</param>
-        public TooManyPositionalArgumentsException(string[] additionalArguments)
-            : base("Too many positional arguments")
+        public TooManyPositionalArgumentsException(IArgumentParser argumentParser, string[] additionalArguments)
+            : base(argumentParser, "Too many positional arguments")
         {
             this.additionalArguments = additionalArguments;
         }

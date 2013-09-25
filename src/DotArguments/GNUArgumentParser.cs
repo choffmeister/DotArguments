@@ -45,7 +45,7 @@ namespace DotArguments
 
                         // a new long named argument
                         string longName = parts[0];
-                        currentNamedArgument = ArgumentParserBase.GetLongNamedArgument(definition, longName);
+                        currentNamedArgument = this.GetLongNamedArgument(definition, longName);
 
                         if (currentNamedArgument.Attribute.GetType() == typeof(NamedValueArgumentAttribute))
                         {
@@ -53,14 +53,14 @@ namespace DotArguments
                             {
                                 string value = parts[1];
 
-                                SetValue(currentNamedArgument, container, value);
+                                this.SetValue(currentNamedArgument, container, value);
 
                                 usedNamedArguments.Add(currentNamedArgument);
                                 currentNamedArgument = null;
                             }
                             else
                             {
-                                throw new NamedValueArgumentValueMissingException(currentNamedArgument);
+                                throw new NamedValueArgumentValueMissingException(this, currentNamedArgument);
                             }
                         }
                         else if (currentNamedArgument.Attribute.GetType() == typeof(NamedSwitchArgumentAttribute))
@@ -75,19 +75,19 @@ namespace DotArguments
                     else if (currentArgument.StartsWith("-", StringComparison.InvariantCulture) && !hadDoubleDash)
                     {
                         char shortName = currentArgument[1];
-                        currentNamedArgument = ArgumentParserBase.GetShortNamedArgument(definition, shortName);
+                        currentNamedArgument = this.GetShortNamedArgument(definition, shortName);
 
                         if (currentNamedArgument.Attribute.GetType() == typeof(NamedValueArgumentAttribute))
                         {
                             if (currentArgument.Length == 2)
                             {
-                                currentNamedArgument = ArgumentParserBase.GetShortNamedArgument(definition, shortName);
+                                currentNamedArgument = this.GetShortNamedArgument(definition, shortName);
                             }
                             else
                             {
                                 string value = currentArgument.Substring(2);
 
-                                SetValue(currentNamedArgument, container, value);
+                                this.SetValue(currentNamedArgument, container, value);
 
                                 usedNamedArguments.Add(currentNamedArgument);
                                 currentNamedArgument = null;
@@ -98,7 +98,7 @@ namespace DotArguments
                             for (int j = 1; j < currentArgument.Length; j++)
                             {
                                 shortName = currentArgument[j];
-                                currentNamedArgument = ArgumentParserBase.GetShortNamedArgument(definition, shortName);
+                                currentNamedArgument = this.GetShortNamedArgument(definition, shortName);
 
                                 currentNamedArgument.Property.SetValue(container, true, new object[0]);
 
@@ -113,7 +113,7 @@ namespace DotArguments
                         {
                             // a positional argument
                             ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute> currentPositionalArgument = definition.PositionalArguments[currentPositionalIndex];
-                            SetValue(currentPositionalArgument, container, currentArgument);
+                            this.SetValue(currentPositionalArgument, container, currentArgument);
 
                             usedPositionalArguments.Add(currentPositionalArgument);
                             currentPositionalIndex++;
@@ -127,7 +127,7 @@ namespace DotArguments
                 }
                 else
                 {
-                    SetValue(currentNamedArgument, container, currentArgument);
+                    this.SetValue(currentNamedArgument, container, currentArgument);
 
                     usedNamedArguments.Add(currentNamedArgument);
                     currentNamedArgument = null;
@@ -140,15 +140,15 @@ namespace DotArguments
             }
             else if (remainingArguments.Count > 0)
             {
-                throw new TooManyPositionalArgumentsException(remainingArguments.ToArray());
+                throw new TooManyPositionalArgumentsException(this, remainingArguments.ToArray());
             }
 
             if (currentNamedArgument != null)
             {
-                throw new NamedValueArgumentValueMissingException(currentNamedArgument);
+                throw new NamedValueArgumentValueMissingException(this, currentNamedArgument);
             }
 
-            ArgumentParserBase.EnsureAllMandatoryArgumentsArePresent(definition, usedNamedArguments, usedPositionalArguments);
+            this.EnsureAllMandatoryArgumentsArePresent(definition, usedNamedArguments, usedPositionalArguments);
         }
 
         /// <summary>
@@ -158,18 +158,20 @@ namespace DotArguments
         /// <param name="definition">The argument definition.</param>
         public override string GenerateUsageString(ArgumentDefinition definition)
         {
-            string executableName = System.AppDomain.CurrentDomain.FriendlyName;
             bool hasPositionalArguments = definition.PositionalArguments.Count > 0;
             bool hasNamedArguments = definition.LongNamedArguments.Count > 0;
             bool hasRemainingArguments = definition.RemainingArguments != null;
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append(executableName);
-
             if (hasNamedArguments)
             {
-                sb.Append(" [options] [--]");
+                sb.Append(" [options]");
+            }
+
+            if (hasPositionalArguments)
+            {
+                sb.Append(" [--]");
             }
 
             foreach (var arg in definition.PositionalArguments.OrderBy(n => n.Key).Select(n => n.Value))
@@ -229,7 +231,7 @@ namespace DotArguments
             return sb.ToString();
         }
 
-        private static void SetValue(ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument, object container, string stringValue)
+        private void SetValue(ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument, object container, string stringValue)
         {
             try
             {
@@ -237,11 +239,11 @@ namespace DotArguments
             }
             catch (FormatException)
             {
-                throw new ArgumentFormatException(argument, stringValue);
+                throw new ArgumentFormatException(this, argument, stringValue);
             }
         }
 
-        private static void SetValue(ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute> argument, object container, string stringValue)
+        private void SetValue(ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute> argument, object container, string stringValue)
         {
             try
             {
@@ -249,7 +251,7 @@ namespace DotArguments
             }
             catch (FormatException)
             {
-                throw new ArgumentFormatException(argument, stringValue);
+                throw new ArgumentFormatException(this, argument, stringValue);
             }
         }
     }

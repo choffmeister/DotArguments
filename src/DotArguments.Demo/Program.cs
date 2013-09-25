@@ -14,6 +14,8 @@ namespace DotArguments.Demo
         /// <param name="args">The command-line arguments.</param>
         public static void Main(string[] args)
         {
+            string executableName = System.AppDomain.CurrentDomain.FriendlyName;
+
             // create container definition and the parser
             ArgumentDefinition definition = new ArgumentDefinition(typeof(DemoArguments));
             GNUArgumentParser parser = new GNUArgumentParser();
@@ -34,8 +36,10 @@ namespace DotArguments.Demo
             }
             catch (Exception ex)
             {
+                string usageString = parser.GenerateUsageString(definition);
+
                 Console.Error.WriteLine(string.Format("error: {0}", ex.Message));
-                Console.Error.Write(string.Format("usage: {0}", parser.GenerateUsageString(definition)));
+                Console.Error.Write(string.Format("usage: {0}{1}", executableName, usageString));
 
                 Environment.Exit(1);
             }

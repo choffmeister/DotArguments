@@ -15,10 +15,11 @@ namespace DotArguments.Exceptions
         /// <summary>
         /// Initializes a new instance of the <see cref="ArgumentFormatException"/> class.
         /// </summary>
+        /// <param name="argumentParser">The argument parser.</param>
         /// <param name="argument">The argument description.</param>
         /// <param name="stringValue">The incorrect value.</param>
-        public ArgumentFormatException(ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument, string stringValue)
-            : base(string.Format("Argument {0} cannot take value {1}", argument.Attribute.LongName, stringValue))
+        public ArgumentFormatException(IArgumentParser argumentParser, ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument, string stringValue)
+            : base(argumentParser, string.Format("Argument {0} cannot take value {1}", argument.Attribute.LongName, stringValue))
         {
             this.attribute = argument.Attribute;
             this.property = argument.Property;
@@ -28,10 +29,11 @@ namespace DotArguments.Exceptions
         /// <summary>
         /// Initializes a new instance of the <see cref="ArgumentFormatException"/> class.
         /// </summary>
+        /// <param name="argumentParser">The argument parser.</param>
         /// <param name="argument">The argument description.</param>
         /// <param name="stringValue">The incorrect value.</param>
-        public ArgumentFormatException(ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute> argument, string stringValue)
-            : base(string.Format("Argument {0} cannot take value {1}", argument.Attribute.Name, stringValue))
+        public ArgumentFormatException(IArgumentParser argumentParser, ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute> argument, string stringValue)
+            : base(argumentParser, string.Format("Argument {0} cannot take value {1}", argument.Attribute.Name, stringValue))
         {
             this.attribute = argument.Attribute;
             this.property = argument.Property;

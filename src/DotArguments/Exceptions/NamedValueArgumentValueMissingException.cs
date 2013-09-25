@@ -14,9 +14,10 @@ namespace DotArguments.Exceptions
         /// <summary>
         /// Initializes a new instance of the <see cref="NamedValueArgumentValueMissingException"/> class.
         /// </summary>
+        /// <param name="argumentParser">The argument parser.</param>
         /// <param name="argument">The argument description.</param>
-        public NamedValueArgumentValueMissingException(ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument)
-            : base(string.Format("Value of argument {0} missing", argument.Attribute.LongName))
+        public NamedValueArgumentValueMissingException(IArgumentParser argumentParser, ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument)
+            : base(argumentParser, string.Format("Value of argument {0} missing", argument.Attribute.LongName))
         {
             this.attribute = argument.Attribute;
             this.property = argument.Property;

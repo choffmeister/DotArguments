@@ -42,7 +42,7 @@ namespace DotArguments
             catch (Exception ex)
             {
                 // ensure exception type
-                throw new ArgumentParserException("Unknown error while parsing", ex);
+                throw new ArgumentParserException(this, "Unknown error while parsing", ex);
             }
         }
 
@@ -60,89 +60,6 @@ namespace DotArguments
         /// <returns>The usage string.</returns>
         /// <param name="definition">The argument definition.</param>
         public abstract string GenerateUsageString(ArgumentDefinition definition);
-
-        /// <summary>
-        /// Ensures that all mandatory arguments are present. This method throws appropriate
-        /// exceptions if one is missing.
-        /// </summary>
-        /// <param name="definition">The argument definition.</param>
-        /// <param name="usedNamedArguments">The used named arguments.</param>
-        /// <param name="usedPositionalArguments">The used positional arguments.</param>
-        protected static void EnsureAllMandatoryArgumentsArePresent(
-            ArgumentDefinition definition,
-            ICollection<ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute>> usedNamedArguments,
-            ICollection<ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute>> usedPositionalArguments)
-        {
-            foreach (var namedArgument in definition.LongNamedArguments.Values)
-            {
-                if (!usedNamedArguments.Contains(namedArgument))
-                {
-                    if (namedArgument.Attribute is NamedValueArgumentAttribute)
-                    {
-                        NamedValueArgumentAttribute castedAttribute = namedArgument.Attribute as NamedValueArgumentAttribute;
-
-                        if (!castedAttribute.IsOptional)
-                        {
-                            throw new MandatoryArgumentMissingException(namedArgument);
-                        }
-                    }
-                }
-            }
-
-            foreach (var positionalArgument in definition.PositionalArguments.Values)
-            {
-                if (!usedPositionalArguments.Contains(positionalArgument))
-                {
-                    if (positionalArgument.Attribute is PositionalValueArgumentAttribute)
-                    {
-                        PositionalValueArgumentAttribute castedAttribute = positionalArgument.Attribute as PositionalValueArgumentAttribute;
-
-                        if (!castedAttribute.IsOptional)
-                        {
-                            throw new MandatoryArgumentMissingException(positionalArgument);
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Tries to get the named argument by its long name. Throws an <see cref="UnknownNamedArgumentException"/>
-        /// is it does not exist. 
-        /// </summary>
-        /// <returns>The named argument.</returns>
-        /// <param name="definition">The argument definition.</param>
-        /// <param name="longName">The long name.</param>
-        protected static ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> GetLongNamedArgument(ArgumentDefinition definition, string longName)
-        {
-            ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument = null;
-
-            if (!definition.LongNamedArguments.TryGetValue(longName, out argument))
-            {
-                throw new UnknownNamedArgumentException(longName);
-            }
-
-            return argument;
-        }
-
-        /// <summary>
-        /// Tries to get the named argument by its short name. Throws an <see cref="UnknownNamedArgumentException"/>
-        /// is it does not exist. 
-        /// </summary>
-        /// <returns>The named argument.</returns>
-        /// <param name="definition">The argument definition.</param>
-        /// <param name="shortName">The short name.</param>
-        protected static ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> GetShortNamedArgument(ArgumentDefinition definition, char shortName)
-        {
-            ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument = null;
-
-            if (!definition.ShortNamedArguments.TryGetValue(shortName, out argument))
-            {
-                throw new UnknownNamedArgumentException(shortName.ToString());
-            }
-
-            return argument;
-        }
 
         /// <summary>
         /// Converts and sets a string value to a property.
@@ -170,6 +87,89 @@ namespace DotArguments
         protected static object GetDefaultValue(Type type)
         {
             return type.IsValueType ? Activator.CreateInstance(type) : null;
+        }
+
+        /// <summary>
+        /// Ensures that all mandatory arguments are present. This method throws appropriate
+        /// exceptions if one is missing.
+        /// </summary>
+        /// <param name="definition">The argument definition.</param>
+        /// <param name="usedNamedArguments">The used named arguments.</param>
+        /// <param name="usedPositionalArguments">The used positional arguments.</param>
+        protected void EnsureAllMandatoryArgumentsArePresent(
+            ArgumentDefinition definition,
+            ICollection<ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute>> usedNamedArguments,
+            ICollection<ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute>> usedPositionalArguments)
+        {
+            foreach (var namedArgument in definition.LongNamedArguments.Values)
+            {
+                if (!usedNamedArguments.Contains(namedArgument))
+                {
+                    if (namedArgument.Attribute is NamedValueArgumentAttribute)
+                    {
+                        NamedValueArgumentAttribute castedAttribute = namedArgument.Attribute as NamedValueArgumentAttribute;
+
+                        if (!castedAttribute.IsOptional)
+                        {
+                            throw new MandatoryArgumentMissingException(this, namedArgument);
+                        }
+                    }
+                }
+            }
+
+            foreach (var positionalArgument in definition.PositionalArguments.Values)
+            {
+                if (!usedPositionalArguments.Contains(positionalArgument))
+                {
+                    if (positionalArgument.Attribute is PositionalValueArgumentAttribute)
+                    {
+                        PositionalValueArgumentAttribute castedAttribute = positionalArgument.Attribute as PositionalValueArgumentAttribute;
+
+                        if (!castedAttribute.IsOptional)
+                        {
+                            throw new MandatoryArgumentMissingException(this, positionalArgument);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Tries to get the named argument by its long name. Throws an <see cref="UnknownNamedArgumentException"/>
+        /// is it does not exist. 
+        /// </summary>
+        /// <returns>The named argument.</returns>
+        /// <param name="definition">The argument definition.</param>
+        /// <param name="longName">The long name.</param>
+        protected ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> GetLongNamedArgument(ArgumentDefinition definition, string longName)
+        {
+            ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument = null;
+
+            if (!definition.LongNamedArguments.TryGetValue(longName, out argument))
+            {
+                throw new UnknownNamedArgumentException(this, longName);
+            }
+
+            return argument;
+        }
+
+        /// <summary>
+        /// Tries to get the named argument by its short name. Throws an <see cref="UnknownNamedArgumentException"/>
+        /// is it does not exist. 
+        /// </summary>
+        /// <returns>The named argument.</returns>
+        /// <param name="definition">The argument definition.</param>
+        /// <param name="shortName">The short name.</param>
+        protected ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> GetShortNamedArgument(ArgumentDefinition definition, char shortName)
+        {
+            ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument = null;
+
+            if (!definition.ShortNamedArguments.TryGetValue(shortName, out argument))
+            {
+                throw new UnknownNamedArgumentException(this, shortName.ToString());
+            }
+
+            return argument;
         }
     }
 }
