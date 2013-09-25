@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using DotArguments;
 using DotArguments.Attributes;
@@ -24,8 +22,8 @@ namespace DotArguments
         public override void PopulateArguments(ArgumentDefinition definition, object container, string[] arguments)
         {
             bool hadDoubleDash = false;
-            var foundNamedArguments = new List<ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute>>();
-            var foundPositionArguments = new List<ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute>>();
+            var usedNamedArguments = new List<ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute>>();
+            var usedPositionalArguments = new List<ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute>>();
 
             int currentPositionalIndex = 0;
             ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> currentNamedArgument = null;
@@ -55,9 +53,9 @@ namespace DotArguments
                             {
                                 string value = parts[1];
 
-                                SetValue(currentNamedArgument.Property, container, value);
+                                ArgumentParserBase.SetValue(currentNamedArgument.Property, container, value);
 
-                                foundNamedArguments.Add(currentNamedArgument);
+                                usedNamedArguments.Add(currentNamedArgument);
                                 currentNamedArgument = null;
                             }
                             else
@@ -70,7 +68,7 @@ namespace DotArguments
                             // a named switch
                             currentNamedArgument.Property.SetValue(container, true, new object[0]);
 
-                            foundNamedArguments.Add(currentNamedArgument);
+                            usedNamedArguments.Add(currentNamedArgument);
                             currentNamedArgument = null;
                         }
                     }
@@ -89,9 +87,9 @@ namespace DotArguments
                             {
                                 string value = currentArgument.Substring(2);
 
-                                SetValue(currentNamedArgument.Property, container, value);
+                                ArgumentParserBase.SetValue(currentNamedArgument.Property, container, value);
 
-                                foundNamedArguments.Add(currentNamedArgument);
+                                usedNamedArguments.Add(currentNamedArgument);
                                 currentNamedArgument = null;
                             }
                         }
@@ -104,7 +102,7 @@ namespace DotArguments
 
                                 currentNamedArgument.Property.SetValue(container, true, new object[0]);
 
-                                foundNamedArguments.Add(currentNamedArgument);
+                                usedNamedArguments.Add(currentNamedArgument);
                                 currentNamedArgument = null;
                             }
                         }
@@ -115,9 +113,9 @@ namespace DotArguments
                         {
                             // a positional argument
                             ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute> currentPositionalArgument = definition.PositionalArguments[currentPositionalIndex];
-                            SetValue(currentPositionalArgument.Property, container, currentArgument);
+                            ArgumentParserBase.SetValue(currentPositionalArgument.Property, container, currentArgument);
 
-                            foundPositionArguments.Add(currentPositionalArgument);
+                            usedPositionalArguments.Add(currentPositionalArgument);
                             currentPositionalIndex++;
                         }
                         else
@@ -129,9 +127,9 @@ namespace DotArguments
                 }
                 else
                 {
-                    SetValue(currentNamedArgument.Property, container, currentArgument);
+                    ArgumentParserBase.SetValue(currentNamedArgument.Property, container, currentArgument);
 
-                    foundNamedArguments.Add(currentNamedArgument);
+                    usedNamedArguments.Add(currentNamedArgument);
                     currentNamedArgument = null;
                 }
             }
@@ -145,38 +143,7 @@ namespace DotArguments
                 throw new ArgumentParserException("Too many positional arguments");
             }
 
-            // check if all non optional arguments were present
-            foreach (var namedArgument in definition.LongNamedArguments.Values)
-            {
-                if (!foundNamedArguments.Contains(namedArgument))
-                {
-                    if (namedArgument.Attribute is NamedValueArgumentAttribute)
-                    {
-                        NamedValueArgumentAttribute castedAttribute = namedArgument.Attribute as NamedValueArgumentAttribute;
-
-                        if (!castedAttribute.IsOptional)
-                        {
-                            throw new ArgumentParserException(string.Format("Mandatory argument {0} is missing", namedArgument.Attribute.LongName));
-                        }
-                    }
-                }
-            }
-
-            foreach (var positionalArgument in definition.PositionalArguments.Values)
-            {
-                if (!foundPositionArguments.Contains(positionalArgument))
-                {
-                    if (positionalArgument.Attribute is PositionalValueArgumentAttribute)
-                    {
-                        PositionalValueArgumentAttribute castedAttribute = positionalArgument.Attribute as PositionalValueArgumentAttribute;
-
-                        if (!castedAttribute.IsOptional)
-                        {
-                            throw new ArgumentParserException(string.Format("Mandatory argument at position {0} is missing", positionalArgument.Attribute.Index));
-                        }
-                    }
-                }
-            }
+            ArgumentParserBase.EnsureAllMandatoryArgumentsArePresent(definition, usedNamedArguments, usedPositionalArguments);
         }
 
         /// <summary>
@@ -255,34 +222,6 @@ namespace DotArguments
             }
 
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// Converts and sets a string value to a property.
-        /// </summary>
-        /// <param name="propertyInfo">The property info.</param>
-        /// <param name="instance">The instance.</param>
-        /// <param name="stringValue">The string value.</param>
-        private static void SetValue(PropertyInfo propertyInfo, object instance, string stringValue)
-        {
-            Type type = propertyInfo.PropertyType;
-            type = Nullable.GetUnderlyingType(type) ?? type;
-
-            object value = stringValue != null ? 
-                Convert.ChangeType(stringValue, type, CultureInfo.InvariantCulture) :
-                GetDefaultValue(type);
-
-            propertyInfo.SetValue(instance, value, new object[0]);
-        }
-
-        /// <summary>
-        /// Gets the default value of a type.
-        /// </summary>
-        /// <returns>The default value.</returns>
-        /// <param name="type">The type.</param>
-        private static object GetDefaultValue(Type type)
-        {
-            return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
     }
 }
