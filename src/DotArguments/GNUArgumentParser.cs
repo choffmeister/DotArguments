@@ -13,122 +13,15 @@ namespace DotArguments
     /// <summary>
     /// Parser for command line arguments.
     /// </summary>
-    public class GNUArgumentParser : IArgumentParser
+    public class GNUArgumentParser : ArgumentParserBase
     {
         /// <summary>
-        /// Parse the specified arguments and returns a new argument container
-        /// object.
+        /// Populates the arguments into the container.
         /// </summary>
-        /// <returns>The argument container.</returns>
         /// <param name="definition">The argument definition.</param>
+        /// <param name="container">The argument container.</param>
         /// <param name="arguments">The arguments.</param>
-        public object Parse(ArgumentDefinition definition, string[] arguments)
-        {
-            if (definition == null)
-                throw new ArgumentNullException("argumentDefinition");
-            if (arguments == null)
-                throw new ArgumentNullException("arguments");
-
-            // ensure that any exception is wrapped into an ArgumentParserException
-            try
-            {
-                object container = Activator.CreateInstance(definition.ContainerType);
-
-                ConsumeArguments(definition, container, arguments);
-
-                return container;
-            }
-            catch (ArgumentParserException ex)
-            {
-                // do not wrap
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                // wrap
-                throw new ArgumentParserException("Error while parsing", ex);
-            }
-        }
-
-        /// <summary>
-        /// Generates a string that explaines which arguments are available.
-        /// </summary>
-        /// <returns>The usage string.</returns>
-        /// <param name="definition">The argument definition.</param>
-        public string GenerateUsageString(ArgumentDefinition definition)
-        {
-            string executableName = System.AppDomain.CurrentDomain.FriendlyName;
-            bool hasPositionalArguments = definition.PositionalArguments.Count > 0;
-            bool hasNamedArguments = definition.LongNamedArguments.Count > 0;
-            bool hasRemainingArguments = definition.RemainingArguments != null;
-
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append(executableName);
-
-            if (hasNamedArguments)
-            {
-                sb.Append(" [options] [--]");
-            }
-
-            foreach (var arg in definition.PositionalArguments.OrderBy(n => n.Key).Select(n => n.Value))
-            {
-                var attr = arg.Attribute;
-
-                if (!attr.IsOptional)
-                {
-                    sb.Append(string.Format(" {0}", attr.Name));
-                }
-                else
-                {
-                    sb.Append(string.Format(" [{0}]", attr.Name));
-                }
-            }
-
-            if (hasRemainingArguments)
-            {
-                sb.Append(" [...]");
-            }
-
-            sb.AppendLine();
-
-            if (hasPositionalArguments)
-            {
-                sb.AppendLine();
-
-                foreach (var arg in definition.PositionalArguments.OrderBy(n => n.Key).Select(n => n.Value))
-                {
-                    var attr = arg.Attribute;
-                    var desc = arg.DescriptionAttribute;
-
-                    sb.AppendLine(string.Format("  {0,-16}   {1}", attr.Name, desc != null && desc.Short != null ? desc.Short : string.Empty));
-                }
-            }
-
-            if (hasNamedArguments)
-            {
-                sb.AppendLine();
-
-                foreach (var arg in definition.LongNamedArguments.OrderBy(n => n.Key).Select(n => n.Value))
-                {
-                    var attr = arg.Attribute;
-                    var desc = arg.DescriptionAttribute;
-
-                    if (attr.ShortName.HasValue)
-                    {
-                        sb.AppendLine(string.Format("  -{0}, --{1,-10}   {2}", attr.ShortName, attr.LongName, desc != null && desc.Short != null ? desc.Short : string.Empty));
-                    }
-                    else
-                    {
-                        sb.AppendLine(string.Format("  --{0,-14}   {1}", attr.LongName, desc != null && desc.Short != null ? desc.Short : string.Empty));
-                    }
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        private static void ConsumeArguments(ArgumentDefinition definition, object container, string[] arguments)
+        public override void PopulateArguments(ArgumentDefinition definition, object container, string[] arguments)
         {
             bool hadDoubleDash = false;
             var foundNamedArguments = new List<ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute>>();
@@ -284,6 +177,84 @@ namespace DotArguments
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Generates a string that explaines which arguments are available.
+        /// </summary>
+        /// <returns>The usage string.</returns>
+        /// <param name="definition">The argument definition.</param>
+        public override string GenerateUsageString(ArgumentDefinition definition)
+        {
+            string executableName = System.AppDomain.CurrentDomain.FriendlyName;
+            bool hasPositionalArguments = definition.PositionalArguments.Count > 0;
+            bool hasNamedArguments = definition.LongNamedArguments.Count > 0;
+            bool hasRemainingArguments = definition.RemainingArguments != null;
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(executableName);
+
+            if (hasNamedArguments)
+            {
+                sb.Append(" [options] [--]");
+            }
+
+            foreach (var arg in definition.PositionalArguments.OrderBy(n => n.Key).Select(n => n.Value))
+            {
+                var attr = arg.Attribute;
+
+                if (!attr.IsOptional)
+                {
+                    sb.Append(string.Format(" {0}", attr.Name));
+                }
+                else
+                {
+                    sb.Append(string.Format(" [{0}]", attr.Name));
+                }
+            }
+
+            if (hasRemainingArguments)
+            {
+                sb.Append(" [...]");
+            }
+
+            sb.AppendLine();
+
+            if (hasPositionalArguments)
+            {
+                sb.AppendLine();
+
+                foreach (var arg in definition.PositionalArguments.OrderBy(n => n.Key).Select(n => n.Value))
+                {
+                    var attr = arg.Attribute;
+                    var desc = arg.DescriptionAttribute;
+
+                    sb.AppendLine(string.Format("  {0,-16}   {1}", attr.Name, desc != null && desc.Short != null ? desc.Short : string.Empty));
+                }
+            }
+
+            if (hasNamedArguments)
+            {
+                sb.AppendLine();
+
+                foreach (var arg in definition.LongNamedArguments.OrderBy(n => n.Key).Select(n => n.Value))
+                {
+                    var attr = arg.Attribute;
+                    var desc = arg.DescriptionAttribute;
+
+                    if (attr.ShortName.HasValue)
+                    {
+                        sb.AppendLine(string.Format("  -{0}, --{1,-10}   {2}", attr.ShortName, attr.LongName, desc != null && desc.Short != null ? desc.Short : string.Empty));
+                    }
+                    else
+                    {
+                        sb.AppendLine(string.Format("  --{0,-14}   {1}", attr.LongName, desc != null && desc.Short != null ? desc.Short : string.Empty));
+                    }
+                }
+            }
+
+            return sb.ToString();
         }
 
         /// <summary>
