@@ -1,7 +1,5 @@
-using System;
 using DotArguments.Tests.TestContainers;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 
 namespace DotArguments.Tests
 {
@@ -107,7 +105,7 @@ namespace DotArguments.Tests
         {
             ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer6));
 
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentParserException),
                 Is.StringContaining("name1").And.StringContaining("missing"),
                 () =>
@@ -124,7 +122,7 @@ namespace DotArguments.Tests
         {
             ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer6));
 
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentParserException),
                 Is.StringContaining("0").And.StringContaining("missing"),
                 () =>
@@ -141,7 +139,7 @@ namespace DotArguments.Tests
         {
             ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer2));
 
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentParserException),
                 Is.StringContaining("Too many"),
                 () =>
@@ -158,32 +156,13 @@ namespace DotArguments.Tests
         {
             ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer2));
 
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentParserException),
                 Is.StringContaining("out of one character"),
             () =>
             {
                 this.parser.Parse(definition, new string[] { "-ab", "10", "pos1" });
             });
-        }
-
-        private static void AssertExceptionWithMessage(Type exceptionType, IResolveConstraint messageConstraint, Action action)
-        {
-            try
-            {
-                action();
-
-                Assert.Fail(string.Format("Expected exception"));
-            }
-            catch (AssertionException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                Assert.AreEqual(exceptionType, ex.GetType());
-                Assert.That(ex.Message, messageConstraint);
-            }
         }
     }
 }

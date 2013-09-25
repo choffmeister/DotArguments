@@ -1,7 +1,5 @@
-using System;
 using DotArguments.Tests.TestContainers;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 
 namespace DotArguments.Tests
 {
@@ -122,7 +120,7 @@ namespace DotArguments.Tests
         [Test]
         public void TestDetectionOfMultipleArgumentAttributes()
         {
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentDefinitionException),
                 Is.StringContaining("more than one"),
                 () =>
@@ -137,7 +135,7 @@ namespace DotArguments.Tests
         [Test]
         public void TestDetectionOfPositionalIndicesProblems()
         {
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentDefinitionException),
                 Is.StringContaining("already in use"),
                 () =>
@@ -145,7 +143,7 @@ namespace DotArguments.Tests
                 new ArgumentDefinition(typeof(CorruptArgumentContainer2));
             });
 
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentDefinitionException),
                 Is.StringContaining("is missing"),
                 () =>
@@ -153,7 +151,7 @@ namespace DotArguments.Tests
                 new ArgumentDefinition(typeof(CorruptArgumentContainer3));
             });
 
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentDefinitionException),
                 Is.StringContaining("must start at"),
                 () =>
@@ -168,7 +166,7 @@ namespace DotArguments.Tests
         [Test]
         public void TestDetectionOfNamingProblems()
         {
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentDefinitionException),
                 Is.StringContaining("Long name").And.StringContaining("already in use"),
                 () =>
@@ -176,7 +174,7 @@ namespace DotArguments.Tests
                 new ArgumentDefinition(typeof(CorruptArgumentContainer5));
             });
 
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentDefinitionException),
                 Is.StringContaining("Short name").And.StringContaining("already in use"),
                 () =>
@@ -192,7 +190,7 @@ namespace DotArguments.Tests
         [Test]
         public void TestDetectionOfMultipleRemainingArguments()
         {
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentDefinitionException),
                 Is.StringContaining("can only be used once"),
                 () =>
@@ -208,7 +206,7 @@ namespace DotArguments.Tests
         [Test]
         public void TestDetectionOfRemainingArgumentsOnNonStringArrays()
         {
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentDefinitionException),
                 Is.StringContaining("must have type System.String[]"),
                 () =>
@@ -224,7 +222,7 @@ namespace DotArguments.Tests
         [Test]
         public void TestDetectionOfNamedSwitchArgumentsOnNonBooleans()
         {
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentDefinitionException),
                 Is.StringContaining("must have type System.Boolean"),
                 () =>
@@ -239,7 +237,7 @@ namespace DotArguments.Tests
         [Test]
         public void TestDetectionOfInvalidLongNames()
         {
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentDefinitionException),
                 Is.StringContaining("at least 2 characters"),
                 () =>
@@ -247,32 +245,13 @@ namespace DotArguments.Tests
                 new ArgumentDefinition(typeof(CorruptArgumentContainer10));
             });
 
-            AssertExceptionWithMessage(
+            AssertHelper.AssertExceptionWithMessage(
                 typeof(ArgumentDefinitionException),
                 Is.StringContaining("match regex"),
                 () =>
             {
                 new ArgumentDefinition(typeof(CorruptArgumentContainer11));
             });
-        }
-
-        private static void AssertExceptionWithMessage(Type exceptionType, IResolveConstraint messageConstraint, Action action)
-        {
-            try
-            {
-                action();
-
-                Assert.Fail(string.Format("Expected exception"));
-            }
-            catch (AssertionException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                Assert.AreEqual(exceptionType, ex.GetType());
-                Assert.That(ex.Message, messageConstraint);
-            }
         }
     }
 }
