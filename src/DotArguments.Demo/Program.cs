@@ -1,7 +1,7 @@
 using System;
 using DotArguments;
 
-namespace DotArgumentsDemo
+namespace DotArguments.Demo
 {
     /// <summary>
     /// The main executable class for the demo.

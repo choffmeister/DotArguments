@@ -1,6 +1,6 @@
 using DotArguments.Attributes;
 
-namespace DotArgumentsDemo
+namespace DotArguments.Demo
 {
     /// <summary>
     /// Container for the demo arguments.
