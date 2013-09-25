@@ -54,6 +54,7 @@
     <Compile Include="Exceptions\MandatoryArgumentMissingException.cs" />
     <Compile Include="ArgumentParserBase.cs" />
     <Compile Include="Exceptions\NamedValueArgumentValueMissingException.cs" />
+    <Compile Include="Exceptions\TooManyPositionalArgumentsException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

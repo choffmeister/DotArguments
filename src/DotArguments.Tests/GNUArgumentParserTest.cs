@@ -149,8 +149,8 @@ namespace DotArguments.Tests
             ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer2));
 
             AssertHelper.AssertExceptionWithMessage(
-                typeof(ArgumentParserException),
-                Is.StringContaining("Too many"),
+                typeof(TooManyPositionalArgumentsException),
+                Is.StringContaining("many"),
                 () =>
             {
                 this.parser.Parse(definition, new string[] { "--age=10", "pos1", "pos2" });

@@ -140,7 +140,7 @@ namespace DotArguments
             }
             else if (remainingArguments.Count > 0)
             {
-                throw new ArgumentParserException("Too many positional arguments");
+                throw new TooManyPositionalArgumentsException(remainingArguments.ToArray());
             }
 
             if (currentNamedArgument != null)
