@@ -2,9 +2,11 @@
 
 DotArguments is a simple command-line arguments parser for .NET/Mono. The available arguments are defined by simple POCOs with special attributes on its properties.
 
+This library comes with a GNU compliant (see [GNU Argument Syntax](http://www.gnu.org/software/libc/manual/html_node/Argument-Syntax.html)) argument parser. But you are free to implement your very own parser.
+
 ## Install via NuGet
 
-This package can be found on NuGet:
+This package can be found on [NuGet](http://www.nuget.org/packages/DotArguments/):
 
 ```
 PM> Install-Package DotArguments
@@ -60,13 +62,14 @@ namespace DotArgumentsDemo
     {
         public static void Main(string[] args)
         {
-            // create container definition
+            // create container definition and the parser
             ArgumentDefinition definition = new ArgumentDefinition(typeof(DemoArguments));
+            GNUArgumentParser parser = new GNUArgumentParser();
 
             try
             {
                 // create object with the populated arguments
-                DemoArguments arguments = definition.Parse<DemoArguments>(args);
+                DemoArguments arguments = parser.Parse<DemoArguments>(definition, args);
 
                 Console.WriteLine("InputPath: {0}", arguments.InputPath ?? "(null)");
                 Console.WriteLine("OutputPath: {0}", arguments.OutputPath ?? "(null)");
@@ -80,7 +83,7 @@ namespace DotArgumentsDemo
             catch (Exception ex)
             {
                 Console.Error.WriteLine(string.Format("error: {0}", ex.Message));
-                Console.Error.Write(string.Format("usage: {0}", definition.GenerateUsageString()));
+                Console.Error.Write(string.Format("usage: {0}", parser.GenerateUsageString(definition)));
 
                 Environment.Exit(1);
             }
@@ -91,8 +94,9 @@ namespace DotArgumentsDemo
 
 Here are some examples, how the application can be invoked and what values would be populated:
 
-```bash
-$ DotArguments.Demo.exe --age 10 --name tom input output
+```
+DotArguments.Demo.exe --age=10 -n tom input output
+
 InputPath: input
 OutputPath: output
 Name: tom
@@ -101,8 +105,9 @@ Verbose: False
 Remaining: []
 ```
 
-```bash
-$ DotArguments.Demo.exe --name tom output --age 10
+```
+DotArguments.Demo.exe --name=tom output --age=10
+
 InputPath: output
 OutputPath: (null)
 Name: tom
@@ -111,8 +116,9 @@ Verbose: False
 Remaining: []
 ```
 
-```bash
-$ DotArguments.Demo.exe input -v output additional1 additional2
+```
+DotArguments.Demo.exe input -v output additional1 additional2
+
 InputPath: input
 OutputPath: output
 Name: (null)
@@ -121,12 +127,27 @@ Verbose: True
 Remaining: [additional1,additional2]
 ```
 
-Are invocation with invalid arguments:
+And now some invocation with invalid arguments:
 
-```bash
+```
 DotArguments.Demo.exe
-error: Mandatory argument at position 0 is missing
-usage: DotArguments.Demo.exe [options] inputpath [outputpath] [...]
+
+error: Mandatory argument inputpath missing
+usage: DotArguments.Demo.exe [options] [--] inputpath [outputpath] [...]
+
+  inputpath          the input path
+  outputpath         the output path
+
+  --age              the age
+  -n, --name         the name
+  -v, --verbose      enable verbose console output
+```
+
+```
+DotArguments.Demo.exe input --age=test
+
+error: Argument age cannot take value test
+usage: DotArguments.Demo.exe [options] [--] inputpath [outputpath] [...]
 
   inputpath          the input path
   outputpath         the output path
