@@ -115,8 +115,8 @@ namespace DotArguments.Tests
             ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer6));
 
             AssertHelper.AssertExceptionWithMessage(
-                typeof(ArgumentParserException),
-                Is.StringContaining("name1").And.StringContaining("missing"),
+                typeof(MandatoryArgumentMissingException),
+                Is.StringContaining("name1"),
                 () =>
             {
                 this.parser.Parse(definition, new string[] { "1" });
@@ -132,8 +132,8 @@ namespace DotArguments.Tests
             ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer6));
 
             AssertHelper.AssertExceptionWithMessage(
-                typeof(ArgumentParserException),
-                Is.StringContaining("0").And.StringContaining("missing"),
+                typeof(MandatoryArgumentMissingException),
+                Is.StringContaining("age"),
                 () =>
             {
                 this.parser.Parse(definition, new string[] { "--name1=n1" });

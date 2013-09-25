@@ -83,7 +83,7 @@ namespace DotArguments
 
                         if (!castedAttribute.IsOptional)
                         {
-                            throw new ArgumentParserException(string.Format("Mandatory argument {0} is missing", namedArgument.Attribute.LongName));
+                            throw new MandatoryArgumentMissingException(namedArgument);
                         }
                     }
                 }
@@ -99,7 +99,7 @@ namespace DotArguments
 
                         if (!castedAttribute.IsOptional)
                         {
-                            throw new ArgumentParserException(string.Format("Mandatory argument at position {0} is missing", positionalArgument.Attribute.Index));
+                            throw new MandatoryArgumentMissingException(positionalArgument);
                         }
                     }
                 }
