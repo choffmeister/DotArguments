@@ -240,5 +240,32 @@ namespace DotArguments.Tests
                 this.parser.Parse<ArgumentContainer2>(definition, new string[] { "foo3", "-a" });
             });
         }
+
+        /// <summary>
+        /// Test case 12.
+        /// </summary>
+        [Test]
+        public void TestCase12()
+        {
+            AssertHelper.AssertExceptionWithMessage(
+                typeof(ArgumentFormatException),
+                Is.StringContaining("notanumber").And.StringContaining("age"),
+                () =>
+            {
+                ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer2));
+
+                this.parser.Parse<ArgumentContainer2>(definition, new string[] { "-a", "notanumber", "foo" });
+            });
+
+            AssertHelper.AssertExceptionWithMessage(
+                typeof(ArgumentFormatException),
+                Is.StringContaining("notanumber").And.StringContaining("age"),
+                () =>
+            {
+                ArgumentDefinition definition = new ArgumentDefinition(typeof(ArgumentContainer6));
+
+                this.parser.Parse<ArgumentContainer6>(definition, new string[] { "--name1=Tom", "notanumber" });
+            });
+        }
     }
 }

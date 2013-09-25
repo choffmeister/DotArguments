@@ -53,7 +53,7 @@ namespace DotArguments
                             {
                                 string value = parts[1];
 
-                                ArgumentParserBase.SetValue(currentNamedArgument.Property, container, value);
+                                SetValue(currentNamedArgument, container, value);
 
                                 usedNamedArguments.Add(currentNamedArgument);
                                 currentNamedArgument = null;
@@ -87,7 +87,7 @@ namespace DotArguments
                             {
                                 string value = currentArgument.Substring(2);
 
-                                ArgumentParserBase.SetValue(currentNamedArgument.Property, container, value);
+                                SetValue(currentNamedArgument, container, value);
 
                                 usedNamedArguments.Add(currentNamedArgument);
                                 currentNamedArgument = null;
@@ -113,7 +113,7 @@ namespace DotArguments
                         {
                             // a positional argument
                             ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute> currentPositionalArgument = definition.PositionalArguments[currentPositionalIndex];
-                            ArgumentParserBase.SetValue(currentPositionalArgument.Property, container, currentArgument);
+                            SetValue(currentPositionalArgument, container, currentArgument);
 
                             usedPositionalArguments.Add(currentPositionalArgument);
                             currentPositionalIndex++;
@@ -127,7 +127,7 @@ namespace DotArguments
                 }
                 else
                 {
-                    ArgumentParserBase.SetValue(currentNamedArgument.Property, container, currentArgument);
+                    SetValue(currentNamedArgument, container, currentArgument);
 
                     usedNamedArguments.Add(currentNamedArgument);
                     currentNamedArgument = null;
@@ -227,6 +227,30 @@ namespace DotArguments
             }
 
             return sb.ToString();
+        }
+
+        private static void SetValue(ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute> argument, object container, string stringValue)
+        {
+            try
+            {
+                ArgumentParserBase.SetValue(argument.Property, container, stringValue);
+            }
+            catch (FormatException)
+            {
+                throw new ArgumentFormatException(argument, stringValue);
+            }
+        }
+
+        private static void SetValue(ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute> argument, object container, string stringValue)
+        {
+            try
+            {
+                ArgumentParserBase.SetValue(argument.Property, container, stringValue);
+            }
+            catch (FormatException)
+            {
+                throw new ArgumentFormatException(argument, stringValue);
+            }
         }
     }
 }
