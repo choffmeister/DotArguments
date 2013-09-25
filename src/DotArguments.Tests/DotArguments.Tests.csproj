@@ -55,7 +55,6 @@
     <Compile Include="TestContainers\CorruptArgumentContainer8.cs" />
     <Compile Include="TestContainers\ArgumentContainer4.cs" />
     <Compile Include="TestContainers\CorruptArgumentContainer9.cs" />
-    <Compile Include="ArgumentParserTest.cs" />
     <Compile Include="TestContainers\ArgumentContainer5.cs" />
     <Compile Include="TestContainers\ArgumentContainer6.cs" />
     <Compile Include="TestContainers\CorruptArgumentContainer10.cs" />
@@ -65,6 +64,7 @@
     <Compile Include="TestCommands\Command1.cs" />
     <Compile Include="TestCommands\Command2.cs" />
     <Compile Include="CommandManagerTest.cs" />
+    <Compile Include="GNUArgumentParserTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TestContainers\" />

@@ -41,16 +41,16 @@
     <Compile Include="Attributes\PositionalValueArgumentAttribute.cs" />
     <Compile Include="Attributes\RemainingArgumentsAttribute.cs" />
     <Compile Include="Attributes\NamedArgumentAttribute.cs" />
-    <Compile Include="ArgumentParser.cs" />
     <Compile Include="ArgumentParserException.cs" />
     <Compile Include="Attributes\ArgumentDescriptionAttribute.cs" />
     <Compile Include="ArgumentDefinition.cs" />
     <Compile Include="ArgumentDefinitionException.cs" />
-    <Compile Include="ArgumentDefinitionExtensions.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="CommandManager.cs" />
     <Compile Include="CommandAttribute.cs" />
     <Compile Include="CommandManagerException.cs" />
+    <Compile Include="IArgumentParser.cs" />
+    <Compile Include="GNUArgumentParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

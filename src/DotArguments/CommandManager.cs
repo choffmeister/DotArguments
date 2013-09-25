@@ -51,7 +51,9 @@ namespace DotArguments
                 throw new CommandManagerException(string.Format("Command name {0} is unknown", commandName));
             }
 
-            ICommand command = (ICommand)commandDefinition.ArgumentDefinition.Parse(commandArguments);
+            GNUArgumentParser argumentParser = new GNUArgumentParser();
+            ICommand command = (ICommand)argumentParser.Parse(commandDefinition.ArgumentDefinition, commandArguments);
+
             return command.Execute();
         }
 

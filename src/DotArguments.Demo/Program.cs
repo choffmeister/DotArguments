@@ -14,13 +14,14 @@ namespace DotArguments.Demo
         /// <param name="args">The command-line arguments.</param>
         public static void Main(string[] args)
         {
-            // create container definition
+            // create container definition and the parser
             ArgumentDefinition definition = new ArgumentDefinition(typeof(DemoArguments));
+            GNUArgumentParser parser = new GNUArgumentParser();
 
             try
             {
                 // create object with the populated arguments
-                DemoArguments arguments = definition.Parse<DemoArguments>(args);
+                DemoArguments arguments = parser.Parse<DemoArguments>(definition, args);
 
                 Console.WriteLine("InputPath: {0}", arguments.InputPath ?? "(null)");
                 Console.WriteLine("OutputPath: {0}", arguments.OutputPath ?? "(null)");
@@ -34,7 +35,7 @@ namespace DotArguments.Demo
             catch (Exception ex)
             {
                 Console.Error.WriteLine(string.Format("error: {0}", ex.Message));
-                Console.Error.Write(string.Format("usage: {0}", definition.GenerateUsageString()));
+                Console.Error.Write(string.Format("usage: {0}", parser.GenerateUsageString(definition)));
 
                 Environment.Exit(1);
             }

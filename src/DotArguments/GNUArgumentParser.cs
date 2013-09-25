@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using DotArguments;
 using DotArguments.Attributes;
 
@@ -10,23 +12,8 @@ namespace DotArguments
     /// <summary>
     /// Parser for command line arguments.
     /// </summary>
-    public static class ArgumentParser
+    public class GNUArgumentParser : IArgumentParser
     {
-        /// <summary>
-        /// Parse the specified arguments and returns a new argument container
-        /// object.
-        /// </summary>
-        /// <returns>The argument container.</returns>
-        /// <param name="arguments">The arguments.</param>
-        /// <typeparam name="T">The type of the argument container.</typeparam>
-        public static T Parse<T>(string[] arguments)
-            where T : new()
-        {
-            ArgumentDefinition definition = new ArgumentDefinition(typeof(T));
-
-            return (T)Parse(definition, arguments);
-        }
-
         /// <summary>
         /// Parse the specified arguments and returns a new argument container
         /// object.
@@ -34,7 +21,7 @@ namespace DotArguments
         /// <returns>The argument container.</returns>
         /// <param name="definition">The argument definition.</param>
         /// <param name="arguments">The arguments.</param>
-        public static object Parse(ArgumentDefinition definition, string[] arguments)
+        public object Parse(ArgumentDefinition definition, string[] arguments)
         {
             if (definition == null)
                 throw new ArgumentNullException("argumentDefinition");
@@ -60,6 +47,84 @@ namespace DotArguments
                 // wrap
                 throw new ArgumentParserException("Error while parsing", ex);
             }
+        }
+
+        /// <summary>
+        /// Generates a string that explaines which arguments are available.
+        /// </summary>
+        /// <returns>The usage string.</returns>
+        /// <param name="definition">The argument definition.</param>
+        public string GenerateUsageString(ArgumentDefinition definition)
+        {
+            string executableName = System.AppDomain.CurrentDomain.FriendlyName;
+            bool hasPositionalArguments = definition.PositionalArguments.Count > 0;
+            bool hasNamedArguments = definition.LongNamedArguments.Count > 0;
+            bool hasRemainingArguments = definition.RemainingArguments != null;
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(executableName);
+
+            if (hasNamedArguments)
+            {
+                sb.Append(" [options]");
+            }
+
+            foreach (var arg in definition.PositionalArguments.OrderBy(n => n.Key).Select(n => n.Value))
+            {
+                var attr = arg.Attribute;
+
+                if (!attr.IsOptional)
+                {
+                    sb.Append(string.Format(" {0}", attr.Name));
+                }
+                else
+                {
+                    sb.Append(string.Format(" [{0}]", attr.Name));
+                }
+            }
+
+            if (hasRemainingArguments)
+            {
+                sb.Append(" [...]");
+            }
+
+            sb.AppendLine();
+
+            if (hasPositionalArguments)
+            {
+                sb.AppendLine();
+
+                foreach (var arg in definition.PositionalArguments.OrderBy(n => n.Key).Select(n => n.Value))
+                {
+                    var attr = arg.Attribute;
+                    var desc = arg.DescriptionAttribute;
+
+                    sb.AppendLine(string.Format("  {0,-16}   {1}", attr.Name, desc != null && desc.Short != null ? desc.Short : string.Empty));
+                }
+            }
+
+            if (hasNamedArguments)
+            {
+                sb.AppendLine();
+
+                foreach (var arg in definition.LongNamedArguments.OrderBy(n => n.Key).Select(n => n.Value))
+                {
+                    var attr = arg.Attribute;
+                    var desc = arg.DescriptionAttribute;
+
+                    if (attr.ShortName.HasValue)
+                    {
+                        sb.AppendLine(string.Format("  -{0}, --{1,-10}   {2}", attr.ShortName, attr.LongName, desc != null && desc.Short != null ? desc.Short : string.Empty));
+                    }
+                    else
+                    {
+                        sb.AppendLine(string.Format("  --{0,-14}   {1}", attr.LongName, desc != null && desc.Short != null ? desc.Short : string.Empty));
+                    }
+                }
+            }
+
+            return sb.ToString();
         }
 
         private static void ConsumeArguments(ArgumentDefinition definition, object container, string[] arguments)
