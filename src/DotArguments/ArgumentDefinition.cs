@@ -25,6 +25,9 @@ namespace DotArguments
         /// <param name="containerType">The type of the container.</param>
         public ArgumentDefinition(Type containerType)
         {
+            if (containerType.GetConstructor(Type.EmptyTypes) == null)
+                throw new ArgumentException("containerType must have a parameterless constructor", "containerType");
+
             // initialize
             this.containerType = containerType;
             this.positionalArguments = new Dictionary<int, ArgumentProperty<PositionalArgumentAttribute>>();

@@ -10,9 +10,7 @@ namespace DotArguments
     /// <summary>
     /// Parser for command line arguments.
     /// </summary>
-    /// <typeparam name="T">The type of the argument container.</typeparam>
-    public static class ArgumentParser<T>
-        where T : new()
+    public static class ArgumentParser
     {
         /// <summary>
         /// Parse the specified arguments and returns a new argument container
@@ -20,11 +18,13 @@ namespace DotArguments
         /// </summary>
         /// <returns>The argument container.</returns>
         /// <param name="arguments">The arguments.</param>
-        public static T Parse(string[] arguments)
+        /// <typeparam name="T">The type of the argument container.</typeparam>
+        public static T Parse<T>(string[] arguments)
+            where T : new()
         {
             ArgumentDefinition definition = new ArgumentDefinition(typeof(T));
 
-            return Parse(definition, arguments);
+            return (T)Parse(definition, arguments);
         }
 
         /// <summary>
@@ -34,19 +34,17 @@ namespace DotArguments
         /// <returns>The argument container.</returns>
         /// <param name="definition">The argument definition.</param>
         /// <param name="arguments">The arguments.</param>
-        public static T Parse(ArgumentDefinition definition, string[] arguments)
+        public static object Parse(ArgumentDefinition definition, string[] arguments)
         {
             if (definition == null)
                 throw new ArgumentNullException("argumentDefinition");
             if (arguments == null)
                 throw new ArgumentNullException("arguments");
-            if (definition.ContainerType != typeof(T))
-                throw new ArgumentException("argumentDefinition.ContainerType must match T", "argumentDefinition");
 
             // ensure that any exception is wrapped into an ArgumentParserException
             try
             {
-                T container = new T();
+                object container = Activator.CreateInstance(definition.ContainerType);
 
                 ConsumeArguments(definition, container, arguments);
 
@@ -64,7 +62,7 @@ namespace DotArguments
             }
         }
 
-        private static void ConsumeArguments(ArgumentDefinition definition, T container, string[] arguments)
+        private static void ConsumeArguments(ArgumentDefinition definition, object container, string[] arguments)
         {
             var foundNamedArguments = new List<ArgumentDefinition.ArgumentProperty<NamedArgumentAttribute>>();
             var foundPositionArguments = new List<ArgumentDefinition.ArgumentProperty<PositionalArgumentAttribute>>();

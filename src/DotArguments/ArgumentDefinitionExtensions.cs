@@ -20,7 +20,18 @@ namespace DotArguments
         public static T Parse<T>(this ArgumentDefinition definition, string[] arguments)
             where T : new()
         {
-            return ArgumentParser<T>.Parse(definition, arguments);
+            return (T)ArgumentParser.Parse(definition, arguments);
+        }
+
+        /// <summary>
+        /// Parse the specified arguments against the definition.
+        /// </summary>
+        /// <returns>The populated container.</returns>
+        /// <param name="definition">The definition.</param>
+        /// <param name="arguments">The arguments.</param>
+        public static object Parse(this ArgumentDefinition definition, string[] arguments)
+        {
+            return ArgumentParser.Parse(definition, arguments);
         }
 
         /// <summary>
